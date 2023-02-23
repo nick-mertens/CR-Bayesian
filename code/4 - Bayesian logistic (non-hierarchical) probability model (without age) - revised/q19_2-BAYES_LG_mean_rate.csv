@@ -1,0 +1,603 @@
+"","MMT","MY","MY_prob_rate"
+"1","Acura MDX","2018",0.00871345029239766
+"2","Acura MDX","2019",0.0197222222222222
+"3","Acura MDX","2020",0.0217690058479532
+"4","Acura RDX","2018",0.00353801169590643
+"5","Acura RDX","2019",0.00213450292397661
+"6","Acura RDX","2020",0.0205263157894737
+"7","Acura TLX","2018",0
+"8","Acura TLX","2019",0
+"9","Acura TLX","2020",0
+"10","Alfa Romeo Giulia","2018",0
+"11","Alfa Romeo Giulia","2019",0
+"12","Alfa Romeo Giulia","2020",0
+"13","Alfa Romeo Stelvio","2018",0.0164912280701754
+"14","Alfa Romeo Stelvio","2019",0
+"15","Alfa Romeo Stelvio","2020",0.0187280701754386
+"16","Audi A3","2018",0
+"17","Audi A3","2019",0
+"18","Audi A3","2020",0
+"19","Audi A4/Audi Allroad","2018",0.00315789473684211
+"20","Audi A4/Audi Allroad","2019",0
+"21","Audi A4/Audi Allroad","2020",0.0182163742690058
+"22","Audi A5/Audi S5","2018",0.00428362573099415
+"23","Audi A5/Audi S5","2019",0
+"24","Audi A5/Audi S5","2020",0.00399122807017544
+"25","Audi A6","2018",0
+"26","Audi A6","2019",0.0139181286549708
+"27","Audi A6","2020",0.0280847953216374
+"28","Audi A7","2018",0
+"29","Audi A7","2019",0
+"30","Audi A7","2020",0
+"31","Audi e-tron","2019",0
+"32","Audi e-tron","2020",0
+"33","Audi Q3","2018",0
+"34","Audi Q3","2019",0.0361622807017544
+"35","Audi Q3","2020",0.0254093567251462
+"36","Audi Q5","2018",0.0043859649122807
+"37","Audi Q5","2019",0.00285087719298246
+"38","Audi Q5","2020",0.00261695906432749
+"39","Audi Q7","2018",0.00192982456140351
+"40","Audi Q7","2019",0
+"41","Audi Q7","2020",0.00948830409356725
+"42","Audi Q8","2019",0
+"43","Audi Q8","2020",0
+"44","Audi S4","2018",0
+"45","Audi S4","2019",0
+"46","Audi S4","2020",0
+"47","BMW 2 Series","2018",0.00978070175438596
+"48","BMW 2 Series","2019",0
+"49","BMW 2 Series","2020",0.00248538011695906
+"50","BMW 3 Series/BMW 3 Series Gran Turismo","2018",0.00546783625730994
+"51","BMW 3 Series/BMW 3 Series Gran Turismo","2019",0
+"52","BMW 3 Series/BMW 3 Series Gran Turismo","2020",0.00119883040935673
+"53","BMW 4 Series","2018",0
+"54","BMW 4 Series","2019",0
+"55","BMW 4 Series","2020",0
+"56","BMW 5 Series/BMW 5 Series Gran Turismo","2018",0.0133040935672515
+"57","BMW 5 Series/BMW 5 Series Gran Turismo","2019",0
+"58","BMW 5 Series/BMW 5 Series Gran Turismo","2020",0.00283625730994152
+"59","BMW 7 Series","2018",0
+"60","BMW 7 Series","2019",0
+"61","BMW 7 Series","2020",0
+"62","BMW i3","2018",0
+"63","BMW i3","2019",0
+"64","BMW i3","2020",0.0942397660818713
+"65","BMW X1","2018",0.0104093567251462
+"66","BMW X1","2019",0
+"67","BMW X1","2020",0.00706140350877193
+"68","BMW X2","2018",0
+"69","BMW X2","2019",0
+"70","BMW X2","2020",0
+"71","BMW X3","2018",0
+"72","BMW X3","2019",0.00394736842105263
+"73","BMW X3","2020",0.00771929824561403
+"74","BMW X5","2018",0
+"75","BMW X5","2019",0.0199269005847953
+"76","BMW X5","2020",0.00909356725146199
+"77","BMW X7","2019",0.0654970760233918
+"78","BMW X7","2020",0.00239766081871345
+"79","Buick Enclave","2018",0.0183771929824561
+"80","Buick Enclave","2019",0.00612573099415205
+"81","Buick Enclave","2020",0.00254385964912281
+"82","Buick Encore","2018",0
+"83","Buick Encore","2019",0
+"84","Buick Encore","2020",0
+"85","Buick Envision","2018",0
+"86","Buick Envision","2019",0.0110818713450292
+"87","Buick Envision","2020",0.00255847953216374
+"88","Buick LaCrosse","2018",0
+"89","Buick LaCrosse","2019",0
+"90","Buick Regal/Buick Regal TourX","2018",0.0105409356725146
+"91","Buick Regal/Buick Regal TourX","2019",0
+"92","Buick Regal/Buick Regal TourX","2020",0.0111111111111111
+"93","Cadillac CT6","2018",0.0507894736842105
+"94","Cadillac CT6","2019",0
+"95","Cadillac CT6","2020",0.0915643274853801
+"96","Cadillac Escalade","2018",0
+"97","Cadillac Escalade","2019",0
+"98","Cadillac Escalade","2020",0
+"99","Cadillac XT4","2019",0.018406432748538
+"100","Cadillac XT4","2020",0.00555555555555556
+"101","Cadillac XT5","2018",0.0136111111111111
+"102","Cadillac XT5","2019",0.0124853801169591
+"103","Cadillac XT5","2020",0.00359649122807018
+"104","Cadillac XTS","2018",0
+"105","Cadillac XTS","2019",0.0409356725146199
+"106","Chevrolet Blazer/GMC Jimmy","2019",0.00951754385964912
+"107","Chevrolet Blazer/GMC Jimmy","2020",0.0206140350877193
+"108","Chevrolet Bolt","2018",0
+"109","Chevrolet Bolt","2019",0.00384502923976608
+"110","Chevrolet Bolt","2020",0.00309941520467836
+"111","Chevrolet Camaro","2018",0
+"112","Chevrolet Camaro","2019",0
+"113","Chevrolet Camaro","2020",0
+"114","Chevrolet Colorado/GMC Canyon","2018",0
+"115","Chevrolet Colorado/GMC Canyon","2019",0.00548245614035088
+"116","Chevrolet Colorado/GMC Canyon","2020",0.0139035087719298
+"117","Chevrolet Corvette","2018",0
+"118","Chevrolet Corvette","2019",0
+"119","Chevrolet Corvette","2020",0
+"120","Chevrolet Cruze","2018",0.0180555555555556
+"121","Chevrolet Cruze","2019",0.00369883040935673
+"122","Chevrolet Equinox/GMC Terrain/Pontiac Torrent","2018",0.00912280701754386
+"123","Chevrolet Equinox/GMC Terrain/Pontiac Torrent","2019",0.00514619883040936
+"124","Chevrolet Equinox/GMC Terrain/Pontiac Torrent","2020",0.000745614035087719
+"125","Chevrolet Impala","2018",0
+"126","Chevrolet Impala","2019",0
+"127","Chevrolet Impala","2020",0
+"128","Chevrolet Malibu","2018",0
+"129","Chevrolet Malibu","2019",0
+"130","Chevrolet Malibu","2020",0
+"131","Chevrolet Silverado 1500 LD/GMC Sierra 1500 Limited","2019",0.00843567251461988
+"132","Chevrolet Silverado 1500/GMC Sierra 1500","2018",0.0110380116959064
+"133","Chevrolet Silverado 1500/GMC Sierra 1500","2019",0.00817251461988304
+"134","Chevrolet Silverado 1500/GMC Sierra 1500","2020",0.012719298245614
+"135","Chevrolet Silverado 2500HD/GMC Sierra 2500HD","2018",0
+"136","Chevrolet Silverado 2500HD/GMC Sierra 2500HD","2019",0
+"137","Chevrolet Silverado 2500HD/GMC Sierra 2500HD","2020",0
+"138","Chevrolet Silverado 3500HD/GMC Sierra 3500HD","2018",0
+"139","Chevrolet Silverado 3500HD/GMC Sierra 3500HD","2019",0.0185380116959064
+"140","Chevrolet Silverado 3500HD/GMC Sierra 3500HD","2020",0.0060233918128655
+"141","Chevrolet Suburban/GMC Yukon XL","2018",0
+"142","Chevrolet Suburban/GMC Yukon XL","2019",0.0133918128654971
+"143","Chevrolet Suburban/GMC Yukon XL","2020",0.00299707602339181
+"144","Chevrolet Tahoe/GMC Yukon","2018",0
+"145","Chevrolet Tahoe/GMC Yukon","2019",0
+"146","Chevrolet Tahoe/GMC Yukon","2020",0
+"147","Chevrolet Traverse","2018",0.00362573099415205
+"148","Chevrolet Traverse","2019",0
+"149","Chevrolet Traverse","2020",0.00134502923976608
+"150","Chevrolet Trax","2018",0
+"151","Chevrolet Trax","2019",0.0203801169590643
+"152","Chevrolet Trax","2020",0.00773391812865497
+"153","Chevrolet Volt","2018",0
+"154","Chevrolet Volt","2019",0
+"155","Chrysler 300","2018",0
+"156","Chrysler 300","2019",0
+"157","Chrysler 300","2020",0
+"158","Chrysler Aspen/Dodge Durango","2018",0
+"159","Chrysler Aspen/Dodge Durango","2019",0
+"160","Chrysler Aspen/Dodge Durango","2020",0
+"161","Chrysler Pacifica","2018",0.00469298245614035
+"162","Chrysler Pacifica","2019",0.00445906432748538
+"163","Chrysler Pacifica","2020",0.0104970760233918
+"164","Chrysler Town & Country/Dodge Grand Caravan/Chrysler Voyager/Dodge Caravan","2018",0.0404678362573099
+"165","Chrysler Town & Country/Dodge Grand Caravan/Chrysler Voyager/Dodge Caravan","2019",0.0131578947368421
+"166","Chrysler Town & Country/Dodge Grand Caravan/Chrysler Voyager/Dodge Caravan","2020",0.0169078947368421
+"167","Dodge Challenger","2018",0
+"168","Dodge Challenger","2019",0
+"169","Dodge Challenger","2020",0
+"170","Dodge Charger","2018",0
+"171","Dodge Charger","2019",0
+"172","Dodge Charger","2020",0
+"173","Dodge Ram 1500/Ram 1500","2018",0.00475146198830409
+"174","Dodge Ram 1500/Ram 1500","2019",0.0114473684210526
+"175","Dodge Ram 1500/Ram 1500","2020",0.00590643274853801
+"176","Dodge Ram 2500/Ram 2500","2018",0.0100438596491228
+"177","Dodge Ram 2500/Ram 2500","2019",0
+"178","Dodge Ram 2500/Ram 2500","2020",0.0161695906432749
+"179","Dodge Ram 3500/Ram 3500","2018",0
+"180","Dodge Ram 3500/Ram 3500","2019",0
+"181","Dodge Ram 3500/Ram 3500","2020",0
+"182","Ford EcoSport","2018",0.0424707602339181
+"183","Ford EcoSport","2019",0.0372222222222222
+"184","Ford EcoSport","2020",0.0422149122807018
+"185","Ford Edge","2018",0.00836257309941521
+"186","Ford Edge","2019",0.00969298245614035
+"187","Ford Edge","2020",0.00323099415204678
+"188","Ford Escape/Mazda Tribute/Mercury Mariner","2018",0.00406432748538012
+"189","Ford Escape/Mazda Tribute/Mercury Mariner","2019",0
+"190","Ford Escape/Mazda Tribute/Mercury Mariner","2020",0.00909356725146199
+"191","Ford Expedition","2018",0.0149415204678363
+"192","Ford Expedition","2019",0
+"193","Ford Expedition","2020",0.00741228070175439
+"194","Ford Explorer/Mercury Mountaineer","2018",0.00298245614035088
+"195","Ford Explorer/Mercury Mountaineer","2019",0.00719298245614035
+"196","Ford Explorer/Mercury Mountaineer","2020",0.0175877192982456
+"197","Ford F-150","2018",0.0232456140350877
+"198","Ford F-150","2019",0.0045906432748538
+"199","Ford F-150","2020",0.0066374269005848
+"200","Ford F-250","2018",0
+"201","Ford F-250","2019",0.00771929824561404
+"202","Ford F-250","2020",0.00391812865497076
+"203","Ford F-350","2018",0.0284210526315789
+"204","Ford F-350","2019",0.0108625730994152
+"205","Ford F-350","2020",0.028406432748538
+"206","Ford Flex","2018",0.0182163742690058
+"207","Ford Flex","2019",0.0165350877192982
+"208","Ford Focus","2018",0
+"209","Ford Fusion/Ford Fusion Hybrid/Mercury Milan","2018",0.00505847953216374
+"210","Ford Fusion/Ford Fusion Hybrid/Mercury Milan","2019",0
+"211","Ford Fusion/Ford Fusion Hybrid/Mercury Milan","2020",0.00301169590643275
+"212","Ford Mustang","2018",0.0568859649122807
+"213","Ford Mustang","2019",0.00929824561403509
+"214","Ford Mustang","2020",0.00828947368421053
+"215","Ford Ranger/Mazda B-Series","2019",0.0135526315789474
+"216","Ford Ranger/Mazda B-Series","2020",0.00385964912280702
+"217","Ford Taurus/Mercury Sable","2018",0
+"218","Ford Taurus/Mercury Sable","2019",0
+"219","Genesis G70","2019",0
+"220","Genesis G70","2020",0
+"221","Genesis G80","2018",0
+"222","Genesis G80","2019",0
+"223","Genesis G80","2020",0
+"224","Genesis G90","2018",0
+"225","Genesis G90","2019",0
+"226","Genesis G90","2020",0.121469298245614
+"227","GMC Acadia/Saturn Outlook","2018",0
+"228","GMC Acadia/Saturn Outlook","2019",0
+"229","GMC Acadia/Saturn Outlook","2020",0
+"230","Honda Accord/Honda Accord Hybrid","2018",0.00596491228070175
+"231","Honda Accord/Honda Accord Hybrid","2019",0.00789473684210526
+"232","Honda Accord/Honda Accord Hybrid","2020",0.00304093567251462
+"233","Honda Civic/Honda Civic Hybrid","2018",0.00261695906432749
+"234","Honda Civic/Honda Civic Hybrid","2019",0.00685672514619883
+"235","Honda Civic/Honda Civic Hybrid","2020",0.00277777777777778
+"236","Honda Clarity","2018",0
+"237","Honda Clarity","2019",0
+"238","Honda Clarity","2020",0
+"239","Honda CR-V","2018",0.00673976608187135
+"240","Honda CR-V","2019",0.00192982456140351
+"241","Honda CR-V","2020",0.00236842105263158
+"242","Honda Fit","2018",0.0181578947368421
+"243","Honda Fit","2019",0
+"244","Honda Fit","2020",0.0113450292397661
+"245","Honda HR-V","2018",0
+"246","Honda HR-V","2019",0
+"247","Honda HR-V","2020",0
+"248","Honda Insight","2019",0.0129239766081871
+"249","Honda Insight","2020",0.00279239766081871
+"250","Honda Odyssey","2018",0.0108479532163743
+"251","Honda Odyssey","2019",0.00713450292397661
+"252","Honda Odyssey","2020",0.0100584795321637
+"253","Honda Passport","2019",0.0130847953216374
+"254","Honda Passport","2020",0.00634502923976608
+"255","Honda Pilot","2018",0.00555555555555555
+"256","Honda Pilot","2019",0.00451754385964912
+"257","Honda Pilot","2020",0.00902046783625731
+"258","Honda Ridgeline","2018",0.00608187134502924
+"259","Honda Ridgeline","2019",0.016827485380117
+"260","Honda Ridgeline","2020",0.0109941520467836
+"261","Hyundai Elantra","2018",0.00554093567251462
+"262","Hyundai Elantra","2019",0
+"263","Hyundai Elantra","2020",0.00181286549707602
+"264","Hyundai Elantra GT","2018",0
+"265","Hyundai Elantra GT","2019",0
+"266","Hyundai Elantra GT","2020",0
+"267","Hyundai Ioniq","2018",0.0164912280701754
+"268","Hyundai Ioniq","2019",0.010233918128655
+"269","Hyundai Ioniq","2020",0.00926900584795322
+"270","Hyundai Kona","2018",0
+"271","Hyundai Kona","2019",0.00638888888888889
+"272","Hyundai Kona","2020",0.00162280701754386
+"273","Hyundai Kona Electric","2019",0
+"274","Hyundai Kona Electric","2020",0
+"275","Hyundai Palisade","2020",0.00388888888888889
+"276","Hyundai Santa Fe","2018",0.0177923976608187
+"277","Hyundai Santa Fe","2019",0
+"278","Hyundai Santa Fe","2020",0.00358187134502924
+"279","Hyundai Santa Fe Sport","2018",0
+"280","Hyundai Santa Fe XL","2019",0
+"281","Hyundai Sonata/Hyundai Sonata Hybrid","2018",0.0135964912280702
+"282","Hyundai Sonata/Hyundai Sonata Hybrid","2019",0
+"283","Hyundai Sonata/Hyundai Sonata Hybrid","2020",0.0033625730994152
+"284","Hyundai Tucson","2018",0
+"285","Hyundai Tucson","2019",0
+"286","Hyundai Tucson","2020",0.00998538011695906
+"287","Infiniti Q50","2018",0
+"288","Infiniti Q50","2019",0.0151315789473684
+"289","Infiniti Q50","2020",0.00517543859649123
+"290","Infiniti Q60","2018",0
+"291","Infiniti Q60","2019",0
+"292","Infiniti Q60","2020",0
+"293","Infiniti QX50","2019",0.0275292397660819
+"294","Infiniti QX50","2020",0.0089766081871345
+"295","Infiniti QX60","2018",0
+"296","Infiniti QX60","2019",0
+"297","Infiniti QX60","2020",0
+"298","Jaguar F-Pace","2018",0
+"299","Jaguar F-Pace","2019",0
+"300","Jaguar F-Pace","2020",0
+"301","Jeep Cherokee","2018",0.00751461988304094
+"302","Jeep Cherokee","2019",0.0117982456140351
+"303","Jeep Cherokee","2020",0.00159356725146199
+"304","Jeep Compass","2018",0
+"305","Jeep Compass","2019",0
+"306","Jeep Compass","2020",0
+"307","Jeep Gladiator","2020",0
+"308","Jeep Grand Cherokee","2018",0.00605263157894737
+"309","Jeep Grand Cherokee","2019",0.00340643274853801
+"310","Jeep Grand Cherokee","2020",0.00644736842105263
+"311","Jeep Renegade","2018",0.0494590643274854
+"312","Jeep Renegade","2019",0
+"313","Jeep Renegade","2020",0.0175146198830409
+"314","Jeep Wrangler","2018",0.0173684210526316
+"315","Jeep Wrangler","2019",0.00687134502923977
+"316","Jeep Wrangler","2020",0.00214912280701754
+"317","Jeep Wrangler JK","2018",0.0110087719298246
+"318","Kia Forte","2018",0
+"319","Kia Forte","2019",0
+"320","Kia Forte","2020",0
+"321","Kia Niro","2018",0
+"322","Kia Niro","2019",0.00795321637426901
+"323","Kia Niro","2020",0.00957602339181286
+"324","Kia Niro Electric","2019",0
+"325","Kia Niro Electric","2020",0
+"326","Kia Optima","2018",0.00701754385964912
+"327","Kia Optima","2019",0
+"328","Kia Optima","2020",0.00350877192982456
+"329","Kia Sedona","2018",0.0220760233918129
+"330","Kia Sedona","2019",0
+"331","Kia Sedona","2020",0.00741228070175439
+"332","Kia Sorento","2018",0.00315789473684211
+"333","Kia Sorento","2019",0.00293859649122807
+"334","Kia Sorento","2020",0.00323099415204678
+"335","Kia Soul","2018",0.00669590643274854
+"336","Kia Soul","2019",0
+"337","Kia Soul","2020",0.0113304093567251
+"338","Kia Sportage","2018",0
+"339","Kia Sportage","2019",0.0189035087719298
+"340","Kia Sportage","2020",0.00064327485380117
+"341","Kia Stinger","2018",0
+"342","Kia Stinger","2019",0.0245760233918129
+"343","Kia Stinger","2020",0.0107163742690058
+"344","Kia Telluride","2020",0.00198830409356725
+"345","Lexus ES/Lexus ES Hybrid","2018",0.00345029239766082
+"346","Lexus ES/Lexus ES Hybrid","2019",0
+"347","Lexus ES/Lexus ES Hybrid","2020",0.00166666666666667
+"348","Lexus GS","2018",0
+"349","Lexus GS","2019",0
+"350","Lexus GS","2020",0
+"351","Lexus GX","2018",0.0122222222222222
+"352","Lexus GX","2019",0
+"353","Lexus GX","2020",0.00366959064327485
+"354","Lexus IS","2018",0
+"355","Lexus IS","2019",0
+"356","Lexus IS","2020",0
+"357","Lexus LS","2018",0
+"358","Lexus LS","2019",0
+"359","Lexus LS","2020",0
+"360","Lexus LX","2018",0
+"361","Lexus LX","2019",0
+"362","Lexus LX","2020",0
+"363","Lexus NX","2018",0
+"364","Lexus NX","2019",0
+"365","Lexus NX","2020",0.00891812865497076
+"366","Lexus RX/Lexus RX Hybrid/RX L","2018",0.00577485380116959
+"367","Lexus RX/Lexus RX Hybrid/RX L","2019",0.00403508771929825
+"368","Lexus RX/Lexus RX Hybrid/RX L","2020",0.000467836257309941
+"369","Lexus UX","2019",0
+"370","Lexus UX","2020",0.0647953216374269
+"371","Lincoln Aviator","2020",0.0333333333333333
+"372","Lincoln Continental","2018",0
+"373","Lincoln Continental","2019",0.0529385964912281
+"374","Lincoln Continental","2020",0.00755847953216374
+"375","Lincoln Corsair","2020",0
+"376","Lincoln MKC","2018",0
+"377","Lincoln MKC","2019",0
+"378","Lincoln MKX","2018",0.00912280701754386
+"379","Lincoln MKZ/Lincoln MKZ Hybrid","2018",0
+"380","Lincoln MKZ/Lincoln MKZ Hybrid","2019",0
+"381","Lincoln MKZ/Lincoln MKZ Hybrid","2020",0
+"382","Lincoln Nautilus","2019",0.00808479532163743
+"383","Lincoln Nautilus","2020",0.0035672514619883
+"384","Lincoln Navigator","2018",0
+"385","Lincoln Navigator","2019",0.0257894736842105
+"386","Lincoln Navigator","2020",0.0118713450292398
+"387","Mazda 3","2018",0.0105116959064327
+"388","Mazda 3","2019",0.0193859649122807
+"389","Mazda 3","2020",0.00517543859649123
+"390","Mazda 6","2018",0
+"391","Mazda 6","2019",0
+"392","Mazda 6","2020",0
+"393","Mazda CX-3","2018",0
+"394","Mazda CX-3","2019",0
+"395","Mazda CX-3","2020",0
+"396","Mazda CX-30","2020",0
+"397","Mazda CX-5","2018",0
+"398","Mazda CX-5","2019",0.00425438596491228
+"399","Mazda CX-5","2020",0.00482456140350877
+"400","Mazda CX-9","2018",0.0102485380116959
+"401","Mazda CX-9","2019",0
+"402","Mazda CX-9","2020",0.00460526315789474
+"403","Mazda MX-5 Miata","2018",0
+"404","Mazda MX-5 Miata","2019",0
+"405","Mazda MX-5 Miata","2020",0
+"406","Mercedes-Benz C-Class","2018",0.0144298245614035
+"407","Mercedes-Benz C-Class","2019",0.0228801169590643
+"408","Mercedes-Benz C-Class","2020",0.00633040935672515
+"409","Mercedes-Benz E-Class","2018",0.0416812865497076
+"410","Mercedes-Benz E-Class","2019",0.0269590643274854
+"411","Mercedes-Benz E-Class","2020",0.00589181286549708
+"412","Mercedes-Benz GLA","2018",0
+"413","Mercedes-Benz GLA","2019",0
+"414","Mercedes-Benz GLA","2020",0
+"415","Mercedes-Benz GLC","2018",0.00624269005847953
+"416","Mercedes-Benz GLC","2019",0
+"417","Mercedes-Benz GLC","2020",0.0014766081871345
+"418","Mercedes-Benz GLE","2018",0
+"419","Mercedes-Benz GLE","2019",0
+"420","Mercedes-Benz GLE","2020",0.00700292397660819
+"421","Mercedes-Benz GLS","2018",0
+"422","Mercedes-Benz GLS","2019",0.0312865497076023
+"423","Mercedes-Benz GLS","2020",0.00390350877192982
+"424","Mercedes-Benz S-Class","2018",0.0253801169590643
+"425","Mercedes-Benz S-Class","2019",0
+"426","Mercedes-Benz S-Class","2020",0.0114035087719298
+"427","Mercedes-Benz Sprinter","2018",0.0356140350877193
+"428","Mercedes-Benz Sprinter","2019",0
+"429","Mercedes-Benz Sprinter","2020",0.0365350877192982
+"430","Mini Cooper Countryman","2018",0
+"431","Mini Cooper Countryman","2019",0.0156140350877193
+"432","Mini Cooper Countryman","2020",0.00597953216374269
+"433","Mini Cooper/Mini Clubman","2018",0.0318713450292398
+"434","Mini Cooper/Mini Clubman","2019",0
+"435","Mini Cooper/Mini Clubman","2020",0.041374269005848
+"436","Mitsubishi Outlander","2018",0
+"437","Mitsubishi Outlander","2019",0.037266081871345
+"438","Mitsubishi Outlander","2020",0.0280043859649123
+"439","Nissan Altima","2018",0
+"440","Nissan Altima","2019",0.0235233918128655
+"441","Nissan Altima","2020",0.00213450292397661
+"442","Nissan Armada","2018",0
+"443","Nissan Armada","2019",0
+"444","Nissan Armada","2020",0
+"445","Nissan Frontier","2018",0.011140350877193
+"446","Nissan Frontier","2019",0
+"447","Nissan Frontier","2020",0.0835964912280702
+"448","Nissan Kicks","2018",0.102646198830409
+"449","Nissan Kicks","2019",0
+"450","Nissan Kicks","2020",0.0330409356725146
+"451","Nissan Leaf","2018",0.0103654970760234
+"452","Nissan Leaf","2019",0.0131140350877193
+"453","Nissan Leaf","2020",0.0204385964912281
+"454","Nissan Maxima","2018",0
+"455","Nissan Maxima","2019",0.0387719298245614
+"456","Nissan Maxima","2020",0.00738304093567251
+"457","Nissan Murano","2018",0.00501461988304094
+"458","Nissan Murano","2019",0
+"459","Nissan Murano","2020",0.00274853801169591
+"460","Nissan Pathfinder","2018",0.028172514619883
+"461","Nissan Pathfinder","2019",0.0261695906432749
+"462","Nissan Pathfinder","2020",0.0153070175438596
+"463","Nissan Rogue","2018",0.00972222222222222
+"464","Nissan Rogue","2019",0.00400584795321637
+"465","Nissan Rogue","2020",0.00200292397660819
+"466","Nissan Rogue Sport","2018",0.0299853801169591
+"467","Nissan Rogue Sport","2019",0
+"468","Nissan Rogue Sport","2020",0.0278508771929825
+"469","Nissan Sentra","2018",0
+"470","Nissan Sentra","2019",0
+"471","Nissan Sentra","2020",0
+"472","Nissan Titan","2018",0
+"473","Nissan Titan","2019",0
+"474","Porsche 718 Boxster/718 Cayman","2018",0
+"475","Porsche 718 Boxster/718 Cayman","2019",0
+"476","Porsche 718 Boxster/718 Cayman","2020",0
+"477","Porsche 911","2018",0
+"478","Porsche 911","2019",0
+"479","Porsche 911","2020",0
+"480","Porsche Cayenne","2018",0
+"481","Porsche Cayenne","2019",0
+"482","Porsche Cayenne","2020",0
+"483","Porsche Macan","2018",0
+"484","Porsche Macan","2019",0
+"485","Porsche Macan","2020",0
+"486","Porsche Panamera","2018",0
+"487","Porsche Panamera","2019",0
+"488","Porsche Panamera","2020",0.0544005847953216
+"489","Ram 1500 Classic","2019",0
+"490","Ram 1500 Classic","2020",0
+"491","Subaru Ascent","2019",0.0104970760233918
+"492","Subaru Ascent","2020",0.00482456140350877
+"493","Subaru Crosstrek/Subaru XV Crosstrek","2018",0.00140350877192982
+"494","Subaru Crosstrek/Subaru XV Crosstrek","2019",0.00448830409356725
+"495","Subaru Crosstrek/Subaru XV Crosstrek","2020",0.000906432748538012
+"496","Subaru Forester","2018",0.00488304093567251
+"497","Subaru Forester","2019",0.0066374269005848
+"498","Subaru Forester","2020",0.00138888888888889
+"499","Subaru Impreza","2018",0.00932748538011696
+"500","Subaru Impreza","2019",0
+"501","Subaru Impreza","2020",0.00242690058479532
+"502","Subaru Impreza WRX/STi/Subaru WRX/STi","2018",0
+"503","Subaru Impreza WRX/STi/Subaru WRX/STi","2019",0
+"504","Subaru Impreza WRX/STi/Subaru WRX/STi","2020",0
+"505","Subaru Legacy","2018",0.0123099415204678
+"506","Subaru Legacy","2019",0.00307017543859649
+"507","Subaru Legacy","2020",0.0141812865497076
+"508","Subaru Outback","2018",0.0037280701754386
+"509","Subaru Outback","2019",0.00596491228070175
+"510","Subaru Outback","2020",0.00425438596491228
+"511","Tesla Model 3","2018",0.0202923976608187
+"512","Tesla Model 3","2019",0.0334210526315789
+"513","Tesla Model 3","2020",0.0286111111111111
+"514","Tesla Model S","2018",0.0155409356725146
+"515","Tesla Model S","2019",0.0278362573099415
+"516","Tesla Model S","2020",0.0346491228070175
+"517","Tesla Model X","2018",0.0476461988304094
+"518","Tesla Model X","2019",0.0840789473684211
+"519","Tesla Model X","2020",0.0293567251461988
+"520","Tesla Model Y","2020",0.176140350877193
+"521","Toyota 4Runner","2018",0
+"522","Toyota 4Runner","2019",0
+"523","Toyota 4Runner","2020",0
+"524","Toyota Avalon/Toyota Avalon Hybrid","2018",0
+"525","Toyota Avalon/Toyota Avalon Hybrid","2019",0.00621345029239766
+"526","Toyota Avalon/Toyota Avalon Hybrid","2020",0.00780701754385965
+"527","Toyota C-HR","2018",0
+"528","Toyota C-HR","2019",0
+"529","Toyota C-HR","2020",0
+"530","Toyota Camry/Toyota Camry Hybrid","2018",0.00156432748538012
+"531","Toyota Camry/Toyota Camry Hybrid","2019",0.00558479532163743
+"532","Toyota Camry/Toyota Camry Hybrid","2020",0.00299707602339181
+"533","Toyota Corolla","2018",0.00280701754385965
+"534","Toyota Corolla","2019",0.00453216374269006
+"535","Toyota Corolla","2020",0.00244152046783626
+"536","Toyota Corolla Hatchback","2019",0
+"537","Toyota Corolla Hatchback","2020",0
+"538","Toyota Highlander/Toyota Highlander Hybrid","2018",0.00207602339181287
+"539","Toyota Highlander/Toyota Highlander Hybrid","2019",0.0031140350877193
+"540","Toyota Highlander/Toyota Highlander Hybrid","2020",0.00539473684210526
+"541","Toyota Prius","2018",0
+"542","Toyota Prius","2019",0.0102631578947368
+"543","Toyota Prius","2020",0.0079093567251462
+"544","Toyota Prius C","2018",0
+"545","Toyota Prius C","2019",0
+"546","Toyota Prius Prime","2018",0.00399122807017544
+"547","Toyota Prius Prime","2019",0.0089766081871345
+"548","Toyota Prius Prime","2020",0.00461988304093567
+"549","Toyota RAV4/Toyota RAV4 Hybrid","2018",0.00456140350877193
+"550","Toyota RAV4/Toyota RAV4 Hybrid","2019",0.00409356725146199
+"551","Toyota RAV4/Toyota RAV4 Hybrid","2020",0.00312865497076023
+"552","Toyota Sequoia","2018",0
+"553","Toyota Sequoia","2019",0.045219298245614
+"554","Toyota Sequoia","2020",0.00773391812865497
+"555","Toyota Sienna","2018",0.0106432748538012
+"556","Toyota Sienna","2019",0.00263157894736842
+"557","Toyota Sienna","2020",0.00112573099415205
+"558","Toyota Tacoma","2018",0.00798245614035088
+"559","Toyota Tacoma","2019",0.0070906432748538
+"560","Toyota Tacoma","2020",0.00181286549707602
+"561","Toyota Tundra","2018",0.0192690058479532
+"562","Toyota Tundra","2019",0.00469298245614035
+"563","Toyota Tundra","2020",0.00105263157894737
+"564","Volkswagen Atlas","2018",0.015906432748538
+"565","Volkswagen Atlas","2019",0
+"566","Volkswagen Atlas","2020",0.0159795321637427
+"567","Volkswagen Beetle","2018",0.0182748538011696
+"568","Volkswagen Beetle","2019",0.010906432748538
+"569","Volkswagen Golf","2018",0
+"570","Volkswagen Golf","2019",0
+"571","Volkswagen Golf","2020",0
+"572","Volkswagen Golf Alltrack","2018",0.0408771929824561
+"573","Volkswagen Golf Alltrack","2019",0.0116374269005848
+"574","Volkswagen Golf SportWagen","2018",0
+"575","Volkswagen Golf SportWagen","2019",0.0428801169590643
+"576","Volkswagen GTI","2018",0.0332748538011696
+"577","Volkswagen GTI","2019",0.00973684210526316
+"578","Volkswagen GTI","2020",0.0297076023391813
+"579","Volkswagen Jetta","2018",0
+"580","Volkswagen Jetta","2019",0.0225
+"581","Volkswagen Jetta","2020",0.00577485380116959
+"582","Volkswagen Passat","2018",0.0116081871345029
+"583","Volkswagen Passat","2019",0.0487573099415205
+"584","Volkswagen Passat","2020",0.0110964912280702
+"585","Volkswagen Tiguan","2018",0.0056578947368421
+"586","Volkswagen Tiguan","2019",0
+"587","Volkswagen Tiguan","2020",0.0193859649122807
+"588","Volvo S60/Volvo V60","2018",0
+"589","Volvo S60/Volvo V60","2019",0
+"590","Volvo S60/Volvo V60","2020",0
+"591","Volvo S90/Volvo V90","2018",0.0116081871345029
+"592","Volvo S90/Volvo V90","2019",0
+"593","Volvo S90/Volvo V90","2020",0.00888157894736842
+"594","Volvo XC40","2018",0
+"595","Volvo XC40","2019",0
+"596","Volvo XC40","2020",0
+"597","Volvo XC60","2018",0.00845029239766082
+"598","Volvo XC60","2019",0.00687134502923977
+"599","Volvo XC60","2020",0.00293859649122807
+"600","Volvo XC90","2018",0.013187134502924
+"601","Volvo XC90","2019",0.0162573099415205
+"602","Volvo XC90","2020",0.00409356725146199
