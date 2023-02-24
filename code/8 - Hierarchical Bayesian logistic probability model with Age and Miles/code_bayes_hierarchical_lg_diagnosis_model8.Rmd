@@ -280,6 +280,8 @@ print(df %>% group_by(MMT, MY) %>% summarise(prob=sum(q19_2) / n()))
 ```
 
 ```{r}
+## Jae's diagnostic check function ##
+
 # Gelman-Rubin Statistics
 params <- to_list(for (p in dimnames(as.array(fit))$parameters) if (!grepl("lp_", p, fixed=TRUE)) p)
 div_params <- list()
@@ -291,7 +293,7 @@ for (p in params) {
                       autoburnin=TRUE,
                       multivariate=TRUE)
   print(diag_$psrf[1])
-  # if ((diag_$psrf[1] >= 1.1)) {
+  # if ((diag_$psrf[1] >= 1.1)) { # no parameters were above 1.1, changed to 1.0 for testing
   if ((diag_$psrf[1] >= 1.0)) {
     div_params <- append(div_params,p) 
   }
