@@ -219,7 +219,7 @@ run_model <- function(df, make_list) {
   #### 3- MCMC chains are run
   #### 4- results are filtered and written to file
   
-  # List of Makes
+  # Number of iterations
   iter = 20000
   res_df = data.frame()
   
@@ -232,8 +232,8 @@ run_model <- function(df, make_list) {
       data = stan_data,
       iter = iter,
       warmup = 1000,
-      chains = detectCores(), # number of chains
-      #chains = 4,
+      #chains = detectCores(), # number of chains
+      chains = 8,
       cores = detectCores(),
       thin = 10,
       init_r = 0,
@@ -254,4 +254,5 @@ run_model <- function(df, make_list) {
   }
 }
 
-#run_model(df, c("Acura"))
+# Example Run
+run_model(df, c("Nissan"))
