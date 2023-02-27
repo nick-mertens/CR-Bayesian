@@ -25,9 +25,10 @@ library(here)
 library(parallel)
 library(bruceR)
 
-# Read original file
+# Read original file into df
 df = read.csv("../mixeddata052722.csv")
 
+# There are 3 unique years - 2018, 2019, 2020
 years = length(unique(df$MY))
 min_year = min(df$MY)
 
@@ -133,7 +134,7 @@ predict_func <- function(stan_data, coef, df){
           Beta0 = coef$b0[b0_name]
           Beta1 = coef$b1[b1_name]
           Beta2 = coef$b2[b2_name]
-          predict = 1 / (1 + exp(-(Beta0 + Beta1 * stan_data$age[t + n] - Beta2 * stan_data$miles[t + n])))
+          predict = 1 / (1 + exp(-(Beta0 + Beta1 * stan_data$age[t + n] + Beta2 * stan_data$miles[t + n])))
           y_new = c(y_new, predict)
         }
         mmt = unique(df$MMT)[i]
@@ -158,8 +159,8 @@ data {
   int <lower=0> n_mmt;                                            //number of unique MMT per MakeName
   int <lower=0> N_MY[n_years, n_mmt];          //number of observations per MY
   int <lower=0, upper=1> y[N];                                    //outcome
-  real <lower=0> age[N];                                           //age
-  real <lower=0> miles[N];                                         //Mileage
+  real <lower=0, upper=1> age[N];                                           //age
+  real <lower=0, upper=1> miles[N];                                         //Mileage
 }
 
 parameters {
@@ -204,50 +205,53 @@ rstan_options(auto_write = TRUE)
 ################################################################################
 ######## main loop starts here
 
-## generate an empty data frame to store Bayesian results
-bayes_coef = data.frame()
-bayes_pred = data.frame()
-
-## initialize an iterator to show progression
-i = 0
-
-## Bayesian hierarchical models are run for each MMT
-#### 1- data is filtered for each MMT
-#### 2- stan data for feeding to the stan model is created
-#### 3- MCMC chains are run
-#### 4- results are filtered and written to file
-
-make_list = c("Lexus")
-res_df = data.frame()
-
-for (make in (make_list)){
-  temp_df = data_filter_func(df, make)
-  stan_data = stan_data_func(temp_df, years)
+run_model <- function(df, make_list) {
+  ## generate an empty data frame to store Bayesian results
+  #bayes_coef = data.frame()
+  #bayes_pred = data.frame()
   
-  fit <- stan(
-    file = "hier_LG.stan",
-    data = stan_data,
-    iter = 20000,
-    warmup = 1000,
-    #chains = detectCores(), # number of chains
-    chains = 4,
-    cores = detectCores(),
-    thin = 10,
-    init_r = 0,
-    #control = list(adapt_delta = 0.99),
-    seed = 1231,
-    verbose = FALSE
-  )
-  # Save the Model
-  saveRDS(fit, paste("models/fit_M8_", make, ".rds", sep=""))
+  ## initialize an iterator to show progression
+  i = 0
   
-  coef = extract_coef_func(fit)
-  pred_res = predict_func(stan_data, coef, temp_df)
+  ## Bayesian hierarchical models are run for each MMT
+  #### 1- data is filtered for each MMT
+  #### 2- stan data for feeding to the stan model is created
+  #### 3- MCMC chains are run
+  #### 4- results are filtered and written to file
   
-  temp_df['y_pred'] = pred_res$y_new
-  temp_df = temp_df %>%
-    select(MakeName, MMT, MY, q19_2, y_pred)
-  res_df = rbind(res_df, temp_df)
+  # List of Makes
+  iter = 20000
+  res_df = data.frame()
+  
+  for (make in (make_list)){
+    temp_df = data_filter_func(df, make)
+    stan_data = stan_data_func(temp_df, years)
+    
+    fit <- stan(
+      file = "hier_LG.stan",
+      data = stan_data,
+      iter = iter,
+      warmup = 1000,
+      chains = detectCores(), # number of chains
+      #chains = 4,
+      cores = detectCores(),
+      thin = 10,
+      init_r = 0,
+      #control = list(adapt_delta = 0.99),
+      seed = 1231,
+      verbose = FALSE
+    )
+    # Save the Model
+    saveRDS(fit, paste("models/fit_M8_", as.character(iter), "_", make, ".rds", sep=""))
+    
+    coef = extract_coef_func(fit)
+    pred_res = predict_func(stan_data, coef, temp_df)
+    
+    temp_df['y_pred'] = pred_res$y_new
+    temp_df = temp_df %>%
+      select(MakeName, MMT, MY, q19_2, y_pred)
+    res_df = rbind(res_df, temp_df)
+  }
 }
 
-
+#run_model(df, c("Acura"))
