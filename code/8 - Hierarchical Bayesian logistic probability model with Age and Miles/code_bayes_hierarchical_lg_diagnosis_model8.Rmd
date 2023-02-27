@@ -62,19 +62,22 @@ df$MY = as.factor(df$MY)
 
 ```{r}
 # filter dataset to one make
-df = df[df$MakeName == 'Acura', ]
+# df = df[df$MakeName == 'Acura', ]
+df = df[df$MakeName == 'Nissan', ]
 n_mmt = length(unique(df$MMT))
 df = df[!is.na(df$Age) & !is.na(df$Miles) & !is.na(df$q19_2), ]
 
 # standardize features
-# df <- cbind(df, Age_scaled = scaler(df$Age, min = 0, max = 1))
-# df <- cbind(df, Miles_scaled = scaler(df$Miles, min = 0, max = 1))
+df <- cbind(df, Age_scaled = scaler(df$Age, min = 0, max = 1))
+df <- cbind(df, Miles_scaled = scaler(df$Miles, min = 0, max = 1))
 ```
 
 ```{r}
 y = df$q19_2
-age = df$Age
-miles = df$Miles
+# age = df$Age
+# miles = df$Miles
+age = df$Age_scaled
+miles = df$Miles_scaled
 N = length(y)
 
 N_MY = df %>%
@@ -140,13 +143,13 @@ parameters {
 }
 model {
   int n = 0;                                                                                //** The int n initialization was moved to the first line. 
-  kappa ~ gamma(1, 1);                                                        
-  mu ~ normal(0, 1);                                                                                
+  kappa ~ gamma(1, 1);                                                                      //Make-level prior uncertainty parameter
+  mu ~ normal(0, 1);                                                                        //Make-level prior shape parameter        
   for (i in 1:n_mmt){                                                                             
-    rho[i] ~ normal(mu, 1 / kappa);                                                                
+    rho[i] ~ normal(mu, 1 / kappa);                                                         //MMT-level prior shape parameter       
     for (j in 1:n_years){                                                                                                             
-      if (N_MY[j,i] > 0){                                                      
-        alpha[i, j] ~ normal(rho[i], 1/ kappa);                                                     
+      if (N_MY[j,i] > 0){                                                                   //assign priors for MY-level parameters only if at least one obs in MY
+        alpha[i, j] ~ normal(rho[i], 1/ kappa);                                             //MY-level prior shape parameter        
         Beta_0[j, i] ~ normal(0, 1 / kappa);
         Beta_1[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
         Beta_2[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
@@ -154,7 +157,7 @@ model {
         for (t in 1:N_MY[j, i]){                                                  
           y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);            
         }
-        n = n + N_MY[j, i];                                                       
+        n = n + N_MY[j, i];                                                                 //to keep track of number of observation per MMT:MY
       }
     }
   }
@@ -179,14 +182,16 @@ fit <- stan(
 )
 
 ```
+
 ```{r}
 # Save the data
-saveRDS(fit, "fit_model8_acura.rds")
+saveRDS(fit, "fit_model8_nissan_standardized.rds")
 ```
 
 ```{r}
 # If model already run, load it in
-fit <- readRDS("fit_model8_acura.rds")
+# fit <- readRDS("fit_model8_acura.rds")
+fit <- readRDS("fit_model8_acura_standardized.rds")
 ```
 
 ```{r}
