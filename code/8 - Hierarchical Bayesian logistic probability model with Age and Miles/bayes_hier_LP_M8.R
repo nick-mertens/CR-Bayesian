@@ -1,5 +1,5 @@
 #Setting work Directory
-working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2022 Bayesian Modeling - Phase I/05-Data"
+working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
 setwd(working_directory)
 getwd()
 
@@ -197,7 +197,7 @@ model {
 }
 
 ", 
-  "hier_LG.stan")
+  "hier_LG_M8.stan")
 
 ## set Stan options for parallel computing
 options(mc.cores = parallel::detectCores())
@@ -206,7 +206,7 @@ rstan_options(auto_write = TRUE)
 ################################################################################
 ######## main loop starts here
 
-run_model <- function(df, make_list, problem_area) { # adding variable to allow for choice of problem area - NM 02/28/23
+run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # adding variable to allow for choice of problem area - NM 02/28/23
   ## generate an empty data frame to store Bayesian results
   #bayes_coef = data.frame()
   #bayes_pred = data.frame()
@@ -220,8 +220,6 @@ run_model <- function(df, make_list, problem_area) { # adding variable to allow 
   #### 3- MCMC chains are run
   #### 4- results are filtered and written to file
   
-  # Number of iterations
-  iter = 20000
   res_df = data.frame()
   
   for (make in (make_list)){
@@ -229,12 +227,11 @@ run_model <- function(df, make_list, problem_area) { # adding variable to allow 
     stan_data = stan_data_func(temp_df, years, problem_area)
     
     fit <- stan(
-      file = "hier_LG_model8.stan",
+      file = "hier_LG_M8.stan",
       data = stan_data,
       iter = iter,
       warmup = 1000,
-      #chains = detectCores(), # number of chains
-      chains = 8,
+      chains = chains,
       cores = detectCores(),
       thin = 10,
       init_r = 0,
@@ -243,7 +240,7 @@ run_model <- function(df, make_list, problem_area) { # adding variable to allow 
       verbose = FALSE
     )
     # Save the Model
-    saveRDS(fit, paste("fit_M8_", as.character(iter), "_", make, ".rds", sep=""))
+    saveRDS(fit, paste("models/fit_", make, "_M8_", as.character(iter), "_", as.character(chains),".rds", sep=""))
     
     coef = extract_coef_func(fit)
     pred_res = predict_func(stan_data, coef, temp_df)
@@ -256,4 +253,4 @@ run_model <- function(df, make_list, problem_area) { # adding variable to allow 
 }
 
 # Example Run
-run_model(df, c("Acura"), "q19_2")
+run_model(df, iter=5000, chains=2, c("Acura"), "q19_2")
