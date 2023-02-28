@@ -1,6 +1,7 @@
 #Setting work Directory
-working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian-LogisticProb"
+working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2022 Bayesian Modeling - Phase I/05-Data"
 setwd(working_directory)
+getwd()
 
 #Importing required packages
 library(dplyr)
@@ -26,7 +27,7 @@ library(parallel)
 library(bruceR)
 
 # Read original file into df
-df = read.csv("../mixeddata052722.csv")
+df = read.csv("mixeddata052722.csv")
 
 # There are 3 unique years - 2018, 2019, 2020
 years = length(unique(df$MY))
@@ -36,10 +37,10 @@ min_year = min(df$MY)
 #### convert categorical features to factors
 df$MY = as.factor(df$MY)
 
-data_filter_func = function(df, make){
+data_filter_func = function(df, make, problem_area){ # adding variable to allow for choice of problem area - NM 02/28/23
   ## filter data for a single Make
   df = df[df$MakeName == make, ]
-  df = df[!is.na(df$Age) & !is.na(df$q19_2) & !is.na(df$Miles), ]
+  df = df[!is.na(df$Age) & !is.na(df[problem_area]) & !is.na(df$Miles), ]
   
   ## Standard Scaling Features
   df <- cbind(df, Age_scaled = scaler(df$Age, min = 0, max = 1))
@@ -48,12 +49,12 @@ data_filter_func = function(df, make){
   return(df)
 }
 
-stan_data_func = function(df, years){
+stan_data_func = function(df, years, problem_area){ # adding variable to allow for choice of problem area - NM 02/28/23
   ## Create stan data
   #### observations, their length, and a matrix that counts the number of
   #### observations per MMT:MY. For incomplete MMT, the matrix is
   #### filled with zeros
-  y = df$q19_2
+  y = df[[problem_area]]
   age = df$Age_scaled
   miles = df$Miles_scaled
   N = length(y)
@@ -174,7 +175,7 @@ parameters {
 }
 
 model {
-  int n = 0;    //** The int n initialization was moved to the first line. 
+  int n = 0;                                                                                //** The int n initialization was moved to the first line. 
   kappa ~ gamma(1, 1);                                                        
   mu ~ normal(0, 1);                                                                                
   for (i in 1:n_mmt){                                                                             
@@ -205,7 +206,7 @@ rstan_options(auto_write = TRUE)
 ################################################################################
 ######## main loop starts here
 
-run_model <- function(df, make_list) {
+run_model <- function(df, make_list, problem_area) { # adding variable to allow for choice of problem area - NM 02/28/23
   ## generate an empty data frame to store Bayesian results
   #bayes_coef = data.frame()
   #bayes_pred = data.frame()
@@ -224,11 +225,11 @@ run_model <- function(df, make_list) {
   res_df = data.frame()
   
   for (make in (make_list)){
-    temp_df = data_filter_func(df, make)
-    stan_data = stan_data_func(temp_df, years)
+    temp_df = data_filter_func(df, make, problem_area)
+    stan_data = stan_data_func(temp_df, years, problem_area)
     
     fit <- stan(
-      file = "hier_LG.stan",
+      file = "hier_LG_model8.stan",
       data = stan_data,
       iter = iter,
       warmup = 1000,
@@ -242,7 +243,7 @@ run_model <- function(df, make_list) {
       verbose = FALSE
     )
     # Save the Model
-    saveRDS(fit, paste("models/fit_M8_", as.character(iter), "_", make, ".rds", sep=""))
+    saveRDS(fit, paste("fit_M8_", as.character(iter), "_", make, ".rds", sep=""))
     
     coef = extract_coef_func(fit)
     pred_res = predict_func(stan_data, coef, temp_df)
@@ -255,4 +256,4 @@ run_model <- function(df, make_list) {
 }
 
 # Example Run
-run_model(df, c("Nissan"))
+run_model(df, c("Acura"), "q19_2")
