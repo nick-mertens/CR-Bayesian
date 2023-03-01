@@ -99,21 +99,28 @@ max_density_func <- function(x) {
   return(density(x)$x[max_density_x])
 }
 
-extract_coef_func <- function(fit){
+extract_coef_func <- function(fit, coef_mode=c("mode","mean")){
   ## extract Bayesian logistic coefficients from the object fit
   mcmc_df = as.data.frame(fit)
   
   Beta0_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_0[')]
   Beta0_df = mcmc_df[, names(mcmc_df) %in% Beta0_cols]
-  Beta0_values = apply(Beta0_df, MARGIN=2, FUN=max_density_func)
   
   Beta1_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_1[')]
   Beta1_df = mcmc_df[, names(mcmc_df) %in% Beta1_cols]
-  Beta1_values = apply(Beta1_df, MARGIN=2, FUN=max_density_func)
   
   Beta2_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_2[')]
   Beta2_df = mcmc_df[, names(mcmc_df) %in% Beta2_cols]
-  Beta2_values = apply(Beta2_df, MARGIN=2, FUN=max_density_func)
+  
+  if (coef_mode == "mode") {
+    Beta0_values = apply(Beta0_df, MARGIN=2, FUN=max_density_func)
+    Beta1_values = apply(Beta1_df, MARGIN=2, FUN=max_density_func)
+    Beta2_values = apply(Beta2_df, MARGIN=2, FUN=max_density_func)
+  } else {
+    Beta0_values = colMeans(Beta0_df)
+    Beta1_values = colMeans(Beta1_df)
+    Beta2_values = colMeans(Beta2_df)
+  }
   
   return(list(b2 = Beta2_values, b1 = Beta1_values, b0 = Beta0_values))
 }
@@ -242,15 +249,15 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # addi
     # Save the Model
     saveRDS(fit, paste("models/fit_", make, "_M8_", as.character(iter), "_", as.character(chains),".rds", sep=""))
     
-    coef = extract_coef_func(fit)
-    pred_res = predict_func(stan_data, coef, temp_df)
-    
-    temp_df['y_pred'] = pred_res$y_new
-    temp_df = temp_df %>%
-      select(MakeName, MMT, MY, q19_2, y_pred)
-    res_df = rbind(res_df, temp_df)
+    # coef = extract_coef_func(fit)
+    # pred_res = predict_func(stan_data, coef, temp_df)
+    # 
+    # temp_df['y_pred'] = pred_res$y_new
+    # temp_df = temp_df %>%
+    #   select(MakeName, MMT, MY, q19_2, y_pred)
+    # res_df = rbind(res_df, temp_df)
   }
 }
 
 # Example Run
-run_model(df, iter=5000, chains=2, c("Acura"), "q19_2")
+# run_model(df, iter=5000, chains=2, c("Acura"), "q19_2")
