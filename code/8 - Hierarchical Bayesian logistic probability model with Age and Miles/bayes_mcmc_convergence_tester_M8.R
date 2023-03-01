@@ -74,13 +74,15 @@ conv_test = function(fit_model_name, show_params=FALSE, plot_chains=FALSE) {
       stan_trace(loaded_fit, pars=div_params, include=TRUE, inc_warmup=TRUE)
     }
   }
-  return(loaded_fit)
+  #return(loaded_fit)
 }
 
-plot_posterior = function(model_path="models/", MakeName) {
+plot_posterior = function(model_path="models/", MakeName, i=1, j=1) {
   # Plot posterior distributions of parameters for Stanfit objects
   # Parameter 1: path where Stanfit objects are located
   # Parameter 2: Name of the Make
+  # Parameter 3: Index of MMT
+  # Parameter 4: Index of Model Year
   
   # Collect all Stanfit objects of the input Make
   rds_list = list.files("models/")
@@ -102,10 +104,10 @@ plot_posterior = function(model_path="models/", MakeName) {
     # Save parameter name as well as iterations & chains information 
     mu_df <- rbind(mu_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), mu=as.data.frame(loaded_fit)$mu))
     kappa_df <- rbind(kappa_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), kappa=as.data.frame(loaded_fit)$kappa))
-    rho_df <- rbind(rho_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), rho=extract(loaded_fit)$rho[,1]))
-    beta0_df <- rbind(beta0_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta0=extract(loaded_fit)$Beta_0[,1,1]))
-    beta1_df <- rbind(beta1_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta1=extract(loaded_fit)$Beta_1[,1,1]))
-    beta2_df <- rbind(beta2_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta2=extract(loaded_fit)$Beta_2[,1,1]))
+    rho_df <- rbind(rho_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), rho=extract(loaded_fit)$rho[,i]))
+    beta0_df <- rbind(beta0_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta0=extract(loaded_fit)$Beta_0[,j,i]))
+    beta1_df <- rbind(beta1_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta1=extract(loaded_fit)$Beta_1[,j,i]))
+    beta2_df <- rbind(beta2_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta2=extract(loaded_fit)$Beta_2[,j,i]))
   }
   
   # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training
@@ -119,4 +121,5 @@ plot_posterior = function(model_path="models/", MakeName) {
 }
 
 # Example Runs
-plot_posterior("models/","Nissan")
+plot_posterior("models/","Nissan", 3, 3)
+#conv_test("models/fit_Nissan_M8_20000_8.rds", show_params=TRUE)

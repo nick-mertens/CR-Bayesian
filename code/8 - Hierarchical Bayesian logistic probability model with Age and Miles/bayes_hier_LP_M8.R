@@ -1,7 +1,6 @@
 #Setting work Directory
 working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
 setwd(working_directory)
-getwd()
 
 #Importing required packages
 library(dplyr)
@@ -50,13 +49,13 @@ data_filter_func = function(df, make, problem_area){ # adding variable to allow 
 }
 
 stan_data_func = function(df, years, problem_area){ # adding variable to allow for choice of problem area - NM 02/28/23
-  ## Create stan data
+  ## create stan data
   #### observations, their length, and a matrix that counts the number of
   #### observations per MMT:MY. For incomplete MMT, the matrix is
   #### filled with zeros
   y = df[[problem_area]]
-  age = df$Age_scaled
-  miles = df$Miles_scaled
+  age = df$Age_scaled  # assign scaled ages
+  miles = df$Miles_scaled  # assign scaled mileages 
   N = length(y)
   n_mmt = length(unique(df$MMT))
   
@@ -112,6 +111,7 @@ extract_coef_func <- function(fit, coef_mode=c("mode","mean")){
   Beta2_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_2[')]
   Beta2_df = mcmc_df[, names(mcmc_df) %in% Beta2_cols]
   
+  # Coefficient selection mode
   if (coef_mode == "mode") {
     Beta0_values = apply(Beta0_df, MARGIN=2, FUN=max_density_func)
     Beta1_values = apply(Beta1_df, MARGIN=2, FUN=max_density_func)
@@ -259,5 +259,10 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # addi
   }
 }
 
-# Example Run
-# run_model(df, iter=5000, chains=2, c("Acura"), "q19_2")
+# # Example Run
+# for (iter in c(5000, 10000, 20000)) {
+#   for (chain in c(4, 8, 12))
+#   run_model(df, iter=iter, chains=chain, c("Mercedes-Benz"), "q19_2")
+# }
+
+# run_model(df, iter=20000, chains=12, c("Mercedes-Benz"), "q19_2")

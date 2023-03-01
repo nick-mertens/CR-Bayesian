@@ -9,8 +9,11 @@ source("bayes_hier_LP_M8.R")
 # Read original file
 df = read.csv("mixeddata052722.csv")
 
-compute_prob <- function(df, fit_model_name, make, problem_area, coef_mode=c("mode","mean")) {
+compute_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean")) {
   ## Compute naive and predicted probabilities by MMT-MY
+  # Extract Make Name from fit model
+  make = str_split(fit_model_name, "_")[[1]][2]
+  
   # Filter data
   temp_df = data_filter_func(df, make, problem_area)
   years = length(unique(temp_df$MY))
@@ -30,16 +33,21 @@ compute_prob <- function(df, fit_model_name, make, problem_area, coef_mode=c("mo
   
   temp_df['y_pred'] = pred_res$y_new
   temp_df = temp_df %>%
-    select(MakeName, MMT, MY, q19_2, y_pred)
+    select(MakeName, MMT, MY, problem_area, y_pred)
   
   # Compute naive probability (# of total problem count / # of total row count) and predicted probability
-  temp_df = temp_df %>%
-    group_by(MMT, MY) %>% 
-    summarise(cnt=n(), naive_prob=round(sum(q19_2)/n(), 4), pred_prob=round(sum(y_pred)/n(), 4))
+  res_df = temp_df %>%
+    group_by(MakeName, MMT, MY) %>% 
+    summarise(cnt=n(), round(across(everything(), list(mean=mean)), 4))
   
-  return(temp_df)
+  res_df = subset(res_df, select = -c(cnt_mean))
+  
+  print(res_df)
+  
+  return(res_df)
 }
 
 # Example Run
-compute_prob(df, "models/fit_Acura_M8_5000_12.rds", "Acura", "q19_2", "mean")
+res_df = compute_prob(df, fit_model_name="models/fit_Mercedes-Benz_M8_20000_12.rds", 
+             problem_area = "q19_2", coef_mode="mean")
   
