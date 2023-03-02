@@ -286,7 +286,7 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) {
   }
 }
 
-compute_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean")) {
+pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean")) {
   ## Compute naive and predicted probabilities by MMT-MY-MileGrp
   # Parameter 1: Original Dataframe
   # Parameter 2: Trained Stanfit model name
@@ -330,7 +330,7 @@ compute_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","m
 # run_model(df, iter=20000, chains=12, c("Nissan"), "q19_2")
 
 # Example compute probability
-# M7_res_df = compute_prob(df, fit_model_name="models/fit_Acura_M7_20000_12.rds", 
+# M7_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M7_20000_12.rds", 
 #                          problem_area = "q19_2", coef_mode="mode")
 # 
 # View resulting table
