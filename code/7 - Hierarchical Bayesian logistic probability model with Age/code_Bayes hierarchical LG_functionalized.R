@@ -284,27 +284,54 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) {
     # bayes_pred = rbind(bayes_pred, temp_df)
     gc() #garbage removal to free memory
   }
-
-  ## write prediction results (MY level probabilities) to a csv file
-  #### evaluate cell probabilities for each MY
-  #### assuming all model years have equal weight`  `
-  # prob_df = bayes_pred %>% 
-  #   group_by(MMT, MY, MileGrpATC) %>%
-  #   summarise(prob_rate = mean(as.numeric(y_pred)))
-  # write.csv(prob_df, 
-  #           paste("q19_2-BAYES_hier_LG",
-  #                 "_prob_rate.csv",
-  #                 sep = ""))
-  
-  # mean_df = bayes_pred %>% 
-  #   group_by(MMT, MY) %>%
-  #   summarise(MY_prob_rate = mean(as.numeric(y_pred)))
-  # write.csv(prob_df, 
-  #           paste("q19_2-BAYES_hier_LG",
-  #                 "_mean_rate.csv",
-  #                 sep = ""))
 }
 
-# Example Run
+compute_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean")) {
+  ## Compute naive and predicted probabilities by MMT-MY-MileGrp
+  # Parameter 1: Original Dataframe
+  # Parameter 2: Trained Stanfit model name
+  # Parameter 3: Problem area of interest
+  # Parameter 4: Coefficient selection mode. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
+  
+  # Extract Make Name from fit model
+  make = str_split(fit_model_name, "_")[[1]][2]
+  
+  # Filter data
+  temp_df = data_filter_func(df, make, problem_area)
+  years = length(unique(temp_df$MY))
+  
+  # convert categorical features to factors
+  temp_df$MY = as.factor(temp_df$MY)
+  # create Stan Data 
+  stan_data = stan_data_func(temp_df, years, mile_groups, problem_area)
+  
+  # Call Stan model
+  loaded_fit <- readRDS(fit_model_name)
+  
+  # Predict
+  coef = extract_coef_func(loaded_fit, coef_mode)
+  pred_res = predict_func(stan_data, coef, temp_df)
+  
+  temp_df['y_pred'] = pred_res$y_new
+  temp_df = temp_df %>%
+    select(MakeName, MMT, MY, problem_area, y_pred)
+  
+  # Compute naive probability (# of total problem count / # of total row count) and predicted probability
+  res_df = temp_df %>%
+    group_by(MakeName, MMT, MY) %>% 
+    summarise(cnt=n(), round(across(everything(), list(mean=mean)), 4))
+  
+  res_df = subset(res_df, select = -c(cnt_mean))
+  
+  return(res_df)
+}
+
+# Example Train
 # run_model(df, iter=20000, chains=12, c("Nissan"), "q19_2")
 
+# Example compute probability
+# M7_res_df = compute_prob(df, fit_model_name="models/fit_Acura_M7_20000_12.rds", 
+#                          problem_area = "q19_2", coef_mode="mode")
+# 
+# View resulting table
+# view(M7_res_df)  

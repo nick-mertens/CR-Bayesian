@@ -28,6 +28,7 @@ library(bruceR)
 # Read original file into df
 df = read.csv("mixeddata052722.csv")
 
+
 # There are 3 unique years - 2018, 2019, 2020
 years = length(unique(df$MY))
 min_year = min(df$MY)
@@ -256,13 +257,62 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # addi
     # temp_df = temp_df %>%
     #   select(MakeName, MMT, MY, q19_2, y_pred)
     # res_df = rbind(res_df, temp_df)
+    gc()
   }
 }
 
-# # Example Run
+compute_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean")) {
+  ## Compute naive and predicted probabilities by MMT-MY
+  # Parameter 1: Original Dataframe
+  # Parameter 2: Trained Stanfit model name
+  # Parameter 3: Problem area of interest
+  # Parameter 4: Coefficient selection mode. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
+  
+  # Extract Make Name from fit model
+  make = str_split(fit_model_name, "_")[[1]][2]
+  
+  # Filter data
+  temp_df = data_filter_func(df, make, problem_area)
+  years = length(unique(temp_df$MY))
+  
+  # convert categorical features to factors
+  temp_df$MY = as.factor(temp_df$MY)
+  # create Stan Data 
+  stan_data = stan_data_func(temp_df, years, problem_area)
+  
+  # Call Stan model
+  loaded_fit <- readRDS(fit_model_name)
+  
+  # Predict
+  coef = extract_coef_func(loaded_fit, coef_mode)
+  pred_res = predict_func(stan_data, coef, temp_df)
+  
+  temp_df['y_pred'] = pred_res$y_new
+  
+  temp_df = temp_df %>%
+    select(MakeName, MMT, MY, problem_area, y_pred)
+  
+  # Compute naive probability (# of total problem count / # of total row count) and predicted probability
+  res_df = temp_df %>%
+    group_by(MakeName, MMT, MY) %>% 
+    summarise(cnt=n(), round(across(everything(), list(mean=mean)), 4))
+  
+  res_df = subset(res_df, select = -c(cnt_mean))
+  
+  return(res_df)
+}
+
+# # Example Train
 # for (iter in c(5000, 10000, 20000)) {
 #   for (chain in c(4, 8, 12))
 #   run_model(df, iter=iter, chains=chain, c("Mercedes-Benz"), "q19_2")
 # }
 
-# run_model(df, iter=20000, chains=12, c("Nissan"), "q19_2")
+# run_model(df, iter=5000, chains=12, c("Nissan"), "q19_2")
+
+# Example Compute Probability
+# M8_res_df = compute_prob(df, fit_model_name="models/fit_Acura_M8_20000_12.rds", 
+#                          problem_area = "q19_2", coef_mode="mode")
+# 
+# View resulting table
+# view(M8_res_df)
