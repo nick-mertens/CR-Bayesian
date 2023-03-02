@@ -32,6 +32,7 @@ compute_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","m
   pred_res = predict_func(stan_data, coef, temp_df)
   
   temp_df['y_pred'] = pred_res$y_new
+  
   temp_df = temp_df %>%
     select(MakeName, MMT, MY, problem_area, y_pred)
   
@@ -48,6 +49,6 @@ compute_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","m
 }
 
 # Example Run
-res_df = compute_prob(df, fit_model_name="models/fit_Mercedes-Benz_M8_20000_12.rds", 
+M8_res_df = compute_prob(df, fit_model_name="models/fit_Acura_M8_20000_12.rds", 
              problem_area = "q19_2", coef_mode="mean")
   
