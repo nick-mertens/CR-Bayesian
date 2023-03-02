@@ -46,6 +46,6 @@ compute_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","m
 }
 
 # Example Run
-compute_prob(df, fit_model_name="models/fit_Acura_M7_20000_12.rds", 
+res_df = compute_prob(df, fit_model_name="models/fit_Nissan_M7_20000_12.rds", 
              problem_area = "q19_2", coef_mode="mode")
   

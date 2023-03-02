@@ -306,5 +306,5 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) {
 }
 
 # Example Run
-run_model(df, iter=20000, chains=12, c("Mercedes-Benz"), "q19_2")
+# run_model(df, iter=20000, chains=12, c("Nissan"), "q19_2")
 
