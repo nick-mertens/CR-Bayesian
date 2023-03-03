@@ -106,10 +106,10 @@ extract_coef_func <- function(fit, coef_mode=c("mode","mean")){
   Beta0_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_0[')]
   Beta0_df = mcmc_df[, names(mcmc_df) %in% Beta0_cols]
   
-  Beta1_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_1[')]
+  Beta1_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta[') & endsWith(colnames(mcmc_df), '1]')]
   Beta1_df = mcmc_df[, names(mcmc_df) %in% Beta1_cols]
   
-  Beta2_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_2[')]
+  Beta2_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta[') & endsWith(colnames(mcmc_df), '2]')]
   Beta2_df = mcmc_df[, names(mcmc_df) %in% Beta2_cols]
   
   # Coefficient selection mode
@@ -138,8 +138,8 @@ predict_func <- function(stan_data, coef, df){
       if (stan_data$N_MY[j, i] > 0){
         for (t in 1:stan_data$N_MY[j, i]){
           b0_name = paste('Beta_0[', j, ',', i, ']', sep = "")
-          b1_name = paste('Beta_1[', j, ',', i, ']', sep = "")
-          b2_name = paste('Beta_2[', j, ',', i, ']', sep = "")
+          b1_name = paste('Beta[', j, ',', i, ',1]', sep = "")
+          b2_name = paste('Beta[', j, ',', i, ',2]', sep = "")
           Beta0 = coef$b0[b0_name]
           Beta1 = coef$b1[b1_name]
           Beta2 = coef$b2[b2_name]
@@ -177,10 +177,8 @@ parameters {
   real mu;                                   //Make-level mean parameter for normal priors
   real rho[n_mmt];                           //MMT-level mean parameter for normal priors
   real alpha[n_mmt, n_years];                //My-level mean parameter for normal priors
-  //real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
-  //real Beta_1[n_years, n_mmt];         //Logistic regression coefficient for age at Make-MMT-MY level
-  //real Beta_2[n_years, n_mmt];         //Logistic regression coefficient for miles at Make-MMT-MY level
-  real Beta[n_years, n_mmt, 3];
+  real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
+  real Beta[n_years, n_mmt, 2];
 }
 
 model {
@@ -192,21 +190,17 @@ model {
     for (j in 1:n_years){                                                                                                             
       if (N_MY[j,i] > 0){                                                      
         alpha[i, j] ~ normal(rho[i], 1/ kappa);                                                     
-        //Beta_0[j, i] ~ normal(alpha[i, j], 1 / kappa);
-        //Beta_1[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
-        //Beta_2[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
+        Beta_0[j, i] ~ normal(0, 1 / kappa);
         Beta[j,i,:] ~ normal(alpha[i, j], 1 / kappa);
         
         for (t in 1:N_MY[j, i]){                                                  
-          //y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);  
-          y[t + n] ~ bernoulli_logit(Beta[j, i, 1] + Beta[j, i, 2] * age[t + n] + Beta[j, i, 3] * miles[t + n]);   
+          y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta[j, i, 1] * age[t + n] + Beta[j, i, 2] * miles[t + n]);   
         }
         n = n + N_MY[j, i];                                                       
       }
     }
   }
 }
-
 ", 
   "hier_LG_M8.stan")
 
@@ -245,22 +239,13 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # addi
       chains = chains,
       cores = detectCores(),
       thin = 10,
-      init_r = 0,
-      control = list(max_treedepth=10),
+      init_r = 1,
+      #control = list(max_treedepth=10),
       seed = 1231,
       verbose = FALSE
     )
     # Save the Model
     saveRDS(fit, paste("models/fit_", make, "_M8_", as.character(iter), "_", as.character(chains),".rds", sep=""))
-    
-    # coef = extract_coef_func(fit)
-    # pred_res = predict_func(stan_data, coef, temp_df)
-    # 
-    # temp_df['y_pred'] = pred_res$y_new
-    # temp_df = temp_df %>%
-    #   select(MakeName, MMT, MY, q19_2, y_pred)
-    # res_df = rbind(res_df, temp_df)
-    gc()
   }
 }
 
@@ -303,13 +288,15 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
   return(res_df)
 }
 
+
+
 # # Example Train
 # for (iter in c(5000, 10000, 20000)) {
 #   for (chain in c(4, 8, 12))
 #   run_model(df, iter=iter, chains=chain, c("Mercedes-Benz"), "q19_2")
 # }
 
-run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
+#run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
 
 # Example Compute Probability
 #M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")

@@ -32,7 +32,7 @@ model {
           if (N_MY_MileGrpATC[j, k, i] > 0){                                                        //assign priors for over MY:MileGrpATC-level parameters only if there is at least one observation per MY:MileGrpATC
             omega[j, k, i] ~ normal(alpha[i, j], 1 / kappa);                                        //MMT:MY:MileGrpATC-level prior shape parameter
             Beta_1[j, k, i] ~ normal(omega[j, k, i], 1 / kappa);                                      //MMT:MY:MileGrpATC-level prior problem rate
-            Beta_0[j, k, i] ~ normal(omega[j, k, i], 1 / kappa);
+            Beta_0[j, k, i] ~ normal(0, 1 / kappa);
             for (t in 1:N_MY_MileGrpATC[j, k, i]){                                                  //loop over vehicle observations per MMT:MY:MileGrpATC for model specification
               y[t + n] ~ bernoulli_logit(Beta_0[j, k, i] + Beta_1[j, k, i] * age[t + n]);             //vehicle observation is a function of problem rate per MMT:MY:MileGrpATC
             }

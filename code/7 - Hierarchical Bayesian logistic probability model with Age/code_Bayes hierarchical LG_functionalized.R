@@ -199,7 +199,7 @@ model {
           if (N_MY_MileGrpATC[j, k, i] > 0){                                                        //assign priors for over MY:MileGrpATC-level parameters only if there is at least one observation per MY:MileGrpATC
             omega[j, k, i] ~ normal(alpha[i, j], 1 / kappa);                                        //MMT:MY:MileGrpATC-level prior shape parameter
             Beta_1[j, k, i] ~ normal(omega[j, k, i], 1 / kappa);                                      //MMT:MY:MileGrpATC-level prior problem rate
-            Beta_0[j, k, i] ~ normal(omega[j, k, i], 1 / kappa);
+            Beta_0[j, k, i] ~ normal(0, 1 / kappa);
             for (t in 1:N_MY_MileGrpATC[j, k, i]){                                                  //loop over vehicle observations per MMT:MY:MileGrpATC for model specification
               y[t + n] ~ bernoulli_logit(Beta_0[j, k, i] + Beta_1[j, k, i] * age[t + n]);             //vehicle observation is a function of problem rate per MMT:MY:MileGrpATC
             }
@@ -252,37 +252,12 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) {
       cores = detectCores(),
       thin = 10,
       init_r = 1,
-      control = list(max_treedepth=10),
+      #control = list(max_treedepth=10),
       seed = 1231,
       verbose = FALSE
     )
     # Save the Model
     saveRDS(fit, paste("models/fit_", make, "_M7_", as.character(iter), "_", as.character(chains),".rds", sep=""))
-    
-    # coef = extract_coef_func(fit)
-    # pred_res = predict_func(stan_data, coef, temp_df)
-    # 
-    # temp_df['y_pred'] = pred_res$y_new
-    # temp_df = temp_df %>%
-    #   select(MakeName, MMT, MY, MileGrpATC, q19_2, y_pred)
-    
-    ## write prediction results (MileGrpATC level probabilities) to a csv file
-    #### csv and workspace save
-    # write.table(pred_res$beta_df, 
-    #             file = "q19_2-BAYES_hier_LG_COEF.csv", 
-    #             sep = ",",
-    #             col.names = col.names,
-    #             row.names = FALSE,
-    #             append = TRUE)
-    # bayes_coef = rbind(bayes_coef, pred_res$beta_df)
-    # write.table(temp_df, 
-    #             file = "q19_2-BAYES_hier_LG_pred.csv", 
-    #             sep = ",",
-    #             col.names = col.names,
-    #             row.names = FALSE,
-    #             append = TRUE)
-    # bayes_pred = rbind(bayes_pred, temp_df)
-    gc() #garbage removal to free memory
   }
 }
 
@@ -328,6 +303,6 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
 #run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
 
 # Example compute probability
-M7_res_df = pred_prob(df, fit_model_name="models/fit_Nissan_M7_20000_12.rds", problem_area = "q19_2", coef_mode="mode")
+#M7_res_df = pred_prob(df, fit_model_name="models/fit_Nissan_M7_20000_12.rds", problem_area = "q19_2", coef_mode="mode")
 # View resulting table
-view(M7_res_df)  
+#view(M7_res_df)  
