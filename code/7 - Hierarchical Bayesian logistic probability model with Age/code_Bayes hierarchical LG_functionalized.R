@@ -1,5 +1,7 @@
 #Setting work Directory
-working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/7 - Hierarchical Bayesian logistic probability model with Age"
+# working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/7 - Hierarchical Bayesian logistic probability model with Age"
+working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code/7 - Hierarchical Bayesian logistic probability model with Age"
+
 setwd(working_directory)
 
 #Importing required packages
@@ -23,6 +25,7 @@ library(TeachingDemos)
 library(tidyr)
 library(here)
 library(parallel)
+library(loo)
 
 ################################################################################
 #### SET INITIAL VARIABLES #####################################################
@@ -211,6 +214,24 @@ model {
   }
 }
 
+generated quantities {
+  vector[N] log_lik;
+  int n = 0;
+  for (i in 1:n_mmt){
+    for (j in 1:n_years){
+      if (sum(N_MY_MileGrpATC[j, , i]) > 0){
+        for (k in 1:n_grps){
+          if (N_MY_MileGrpATC[j, k, i] > 0){
+            for (t in 1:N_MY_MileGrpATC[j, k, i]){
+              log_lik[t + n] = bernoulli_logit_lpmf(y[t + n] | Beta_0[j, k, i] + Beta_1[j, k, i] * age[t + n]);
+            }
+            n = n + N_MY_MileGrpATC[j, k, i];
+          }
+        }
+      }    
+    }
+  }
+}
 ", 
 "hier_LG_M7.stan")
 
@@ -299,8 +320,30 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
   return(res_df)
 }
 
+# Function to calculate diagnostics for model comparison
+calculate_diagnostics <- function(filename){
+  
+  # load in the model
+  fit <- readRDS(filename)
+  
+  # extract the log likelihood values
+  fit_log <- extract_log_lik(fit, "log_lik", merge_chains = FALSE)
+  
+  # calculate relative sample size
+  fit_eff <- relative_eff(fit_log)
+  
+  # present WAIC
+  print("WAIC")
+  print(waic(fit_log))
+  
+  # present LOO
+  print("Leave One Out CV")
+  print(loo(fit_log, r_eff = fit_eff))
+}
+
 # Example Train
-#run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
+# run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
+# calculate_diagnostics("./models/fit_Acura_M7_5000_12.rds")
 
 # Example compute probability
 #M7_res_df = pred_prob(df, fit_model_name="models/fit_Nissan_M7_20000_12.rds", problem_area = "q19_2", coef_mode="mode")

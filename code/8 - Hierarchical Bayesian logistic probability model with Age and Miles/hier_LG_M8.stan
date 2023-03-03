@@ -29,11 +29,38 @@ model {
         alpha[i, j] ~ normal(rho[i], 1/ kappa);                                                     
         Beta_0[j, i] ~ normal(0, 1 / kappa);
         Beta[j,i,:] ~ normal(alpha[i, j], 1 / kappa);
-        
         for (t in 1:N_MY[j, i]){                                                  
           y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta[j, i, 1] * age[t + n] + Beta[j, i, 2] * miles[t + n]);   
         }
         n = n + N_MY[j, i];                                                       
+      }
+    }
+  }
+}
+
+generated quantities {
+  // Declare a vector of length N to store the log likelihood for each observation
+  vector[N] log_lik;
+  
+  {
+    // Initialize a counter to keep track of the current observation number
+    int n = 0;
+    
+    // Loop over each unique combination of i, j, and t
+    for (i in 1:n_mmt) {
+      for (j in 1:n_years) {
+        if (N_MY[j,i] > 0) {
+          for (t in 1:N_MY[j,i]) {
+            // Calculate the log likelihood for the current observation using the
+            // bernoulli_logit_lpmf function, which takes the observation y[t+n], and
+            // the predicted log odds ratio Beta_0[j,i] + Beta[j,i,1]*age[t+n] + 
+            // Beta[j,i,2]*miles[t+n].
+            log_lik[t + n] = bernoulli_logit_lpmf(y[t + n] | Beta_0[j,i] + Beta[j,i,1]*age[t + n] + Beta[j,i, 2]*miles[t + n]);
+          }
+          // Increment the counter by the number of observations for the current 
+          // combination of i and j
+          n = n + N_MY[j,i];
+        }
       }
     }
   }

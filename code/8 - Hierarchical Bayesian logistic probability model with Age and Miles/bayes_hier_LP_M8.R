@@ -1,5 +1,6 @@
 #Setting work Directory
-working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
+# working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
+working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
 setwd(working_directory)
 
 #Importing required packages
@@ -24,6 +25,7 @@ library(tidyr)
 library(here)
 library(parallel)
 library(bruceR)
+library(loo)
 
 # Read original file into df
 df = read.csv("mixeddata052722.csv")
@@ -200,6 +202,34 @@ model {
     }
   }
 }
+
+generated quantities {
+  // Declare a vector of length N to store the log likelihood for each observation
+  vector[N] log_lik;
+  
+  {
+    // Initialize a counter to keep track of the current observation number
+    int n = 0;
+    
+    // Loop over each unique combination of i, j, and t
+    for (i in 1:n_mmt) {
+      for (j in 1:n_years) {
+        if (N_MY[j,i] > 0) {
+          for (t in 1:N_MY[j,i]) {
+            // Calculate the log likelihood for the current observation using the
+            // bernoulli_logit_lpmf function, which takes the observation y[t+n], and
+            // the predicted log odds ratio Beta_0[j,i] + Beta[j,i,1]*age[t+n] + 
+            // Beta[j,i,2]*miles[t+n].
+            log_lik[t + n] = bernoulli_logit_lpmf(y[t + n] | Beta_0[j,i] + Beta[j,i,1]*age[t + n] + Beta[j,i, 2]*miles[t + n]);
+          }
+          // Increment the counter by the number of observations for the current 
+          // combination of i and j
+          n = n + N_MY[j,i];
+        }
+      }
+    }
+  }
+}
 ", 
   "hier_LG_M8.stan")
 
@@ -287,6 +317,26 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
   return(res_df)
 }
 
+# Function to calculate diagnostics for model comparison
+calculate_diagnostics <- function(filename){
+  
+  # load in the model
+  fit <- readRDS(filename)
+  
+  # extract the log likelihood values
+  fit_log <- extract_log_lik(fit, "log_lik", merge_chains = FALSE)
+  
+  # calculate relative sample size
+  fit_eff <- relative_eff(fit_log)
+  
+  # present WAIC
+  print("WAIC")
+  print(waic(fit_log))
+  
+  # present LOO
+  print("Leave One Out CV")
+  print(loo(fit_log, r_eff = fit_eff))
+}
 
 # # Example Train
 # for (iter in c(5000, 10000, 20000)) {
@@ -294,7 +344,8 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
 #   run_model(df, iter=iter, chains=chain, c("Mercedes-Benz"), "q19_2")
 # }
 
-#run_model(df, iter=5000, chains=12, c("Nissan"), "q19_2")
+# run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
+# calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
 
 # Example Compute Probability
 #M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
