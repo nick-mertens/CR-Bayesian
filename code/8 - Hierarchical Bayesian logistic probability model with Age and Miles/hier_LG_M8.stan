@@ -15,7 +15,7 @@ parameters {
   real rho[n_mmt];                           //MMT-level mean parameter for normal priors
   real alpha[n_mmt, n_years];                //My-level mean parameter for normal priors
   real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
-  real Beta[n_years, n_mmt, 2];
+  real Beta[n_years, n_mmt, 2];      //Coefficients for Age & Mileage at Make-MMT-MY level
 }
 
 model {

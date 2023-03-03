@@ -178,7 +178,7 @@ parameters {
   real rho[n_mmt];                           //MMT-level mean parameter for normal priors
   real alpha[n_mmt, n_years];                //My-level mean parameter for normal priors
   real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
-  real Beta[n_years, n_mmt, 2];
+  real Beta[n_years, n_mmt, 2];      //Coefficients for Age & Mileage at Make-MMT-MY level
 }
 
 model {
@@ -192,7 +192,6 @@ model {
         alpha[i, j] ~ normal(rho[i], 1/ kappa);                                                     
         Beta_0[j, i] ~ normal(0, 1 / kappa);
         Beta[j,i,:] ~ normal(alpha[i, j], 1 / kappa);
-        
         for (t in 1:N_MY[j, i]){                                                  
           y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta[j, i, 1] * age[t + n] + Beta[j, i, 2] * miles[t + n]);   
         }
@@ -289,14 +288,13 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
 }
 
 
-
 # # Example Train
 # for (iter in c(5000, 10000, 20000)) {
 #   for (chain in c(4, 8, 12))
 #   run_model(df, iter=iter, chains=chain, c("Mercedes-Benz"), "q19_2")
 # }
 
-#run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
+#run_model(df, iter=5000, chains=12, c("Nissan"), "q19_2")
 
 # Example Compute Probability
 #M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")

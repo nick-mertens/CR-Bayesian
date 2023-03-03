@@ -110,8 +110,9 @@ parameters {
   real rho[n_mmt];                           //MMT-level mean parameter for normal priors
   real alpha[n_mmt, n_years];                //My-level mean parameter for normal priors
   real Beta_0[n_years, n_mmt];               //Intercept for the logistic regression at Make-MMT-MY level
-  real Beta_1[n_years, n_mmt];               //Logistic regression coefficient for age at Make-MMT-MY level
-  real Beta_2[n_years, n_mmt];               //Logistic regression coefficient for miles at Make-MMT-MY level
+  //real Beta_1[n_years, n_mmt];             //Logistic regression coefficient for age at Make-MMT-MY level
+  //real Beta_2[n_years, n_mmt];             //Logistic regression coefficient for miles at Make-MMT-MY level
+  real Beta[n_years, n_mmt, 2];              //Coefficients for Age & Mileage at Make-MMT-MY level - Combined Beta_1 & Beta_2 into Beta array
 }
 model {
   int n = 0;                                                                                //** The int n initialization was moved to the first line. 
@@ -123,11 +124,14 @@ model {
       if (N_MY[j,i] > 0){                                                                   //assign priors for MY-level parameters only if at least one obs in MY
         alpha[i, j] ~ normal(rho[i], 1/ kappa);                                             //MY-level prior shape parameter        
         Beta_0[j, i] ~ normal(0, 1 / kappa);
-        Beta_1[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
-        Beta_2[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
-  
+        //Beta_1[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
+        //Beta_2[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
+        Beta[j,i,:] ~ normal(alpha[i, j], 1 / kappa);
+        
         for (t in 1:N_MY[j, i]){                                                  
-          y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);            
+          //y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);
+          y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta[j, i, 1] * age[t + n] + Beta[j, i, 2] * miles[t + n]);   
+        }
         }
         n = n + N_MY[j, i];                                                                 //to keep track of number of observation per MMT:MY
       }
@@ -182,12 +186,14 @@ Beta0_df = mcmc_df[, names(mcmc_df) %in% Beta0_cols]
 Beta0_mean_values = colMeans(Beta0_df)
 Beta0_mode_values = apply(Beta0_df, MARGIN=2, FUN=max_density_func)
 
-Beta1_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_1[')]
+#Beta1_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_1[')]
+Beta1_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta[') & endsWith(colnames(mcmc_df), '1]')]
 Beta1_df = mcmc_df[, names(mcmc_df) %in% Beta1_cols]
 Beta1_mean_values = colMeans(Beta1_df)
 Beta1_mode_values = apply(Beta1_df, MARGIN=2, FUN=max_density_func)
 
-Beta2_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_2[')]
+#Beta2_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_2[')]
+Beta2_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta[') & endsWith(colnames(mcmc_df), '2]')]
 Beta2_df = mcmc_df[, names(mcmc_df) %in% Beta2_cols]
 Beta2_mean_values = colMeans(Beta2_df)
 Beta2_mode_values = apply(Beta2_df, MARGIN=2, FUN=max_density_func)
@@ -203,8 +209,10 @@ for (i in 1:stan_data$n_mmt){
       for (t in 1:stan_data$N_MY[j, i]){
         b_name  = paste('Beta', j, ',', i, ']', sep = "")
         b0_name = paste('Beta_0[', j, ',', i, ']', sep = "")
-        b1_name = paste('Beta_1[', j, ',', i, ']', sep = "")
-        b2_name = paste('Beta_2[', j, ',', i, ']', sep = "")
+        #b1_name = paste('Beta_1[', j, ',', i, ']', sep = "")
+        #b2_name = paste('Beta_2[', j, ',', i, ']', sep = "")
+        b1_name = paste('Beta[', j, ',', i, ',1]', sep = "")
+        b2_name = paste('Beta[', j, ',', i, ',2]', sep = "")
         Beta = Beta_mode_values[b_name] # change mode to mean depending on what values you want to use
         Beta0 = Beta0_mode_values[b0_name]
         Beta1 = Beta1_mode_values[b1_name]
