@@ -14,9 +14,10 @@ parameters {
   real mu;                                   //Make-level mean parameter for normal priors
   real rho[n_mmt];                           //MMT-level mean parameter for normal priors
   real alpha[n_mmt, n_years];                //My-level mean parameter for normal priors
-  real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
-  real Beta_1[n_years, n_mmt];         //Logistic regression coefficient for age at Make-MMT-MY level
-  real Beta_2[n_years, n_mmt];         //Logistic regression coefficient for miles at Make-MMT-MY level
+  //real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
+  //real Beta_1[n_years, n_mmt];         //Logistic regression coefficient for age at Make-MMT-MY level
+  //real Beta_2[n_years, n_mmt];         //Logistic regression coefficient for miles at Make-MMT-MY level
+  real Beta[n_years, n_mmt, 3];
 }
 
 model {
@@ -28,12 +29,14 @@ model {
     for (j in 1:n_years){                                                                                                             
       if (N_MY[j,i] > 0){                                                      
         alpha[i, j] ~ normal(rho[i], 1/ kappa);                                                     
-        Beta_0[j, i] ~ normal(0, 1 / kappa);
-        Beta_1[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
-        Beta_2[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
-  
+        //Beta_0[j, i] ~ normal(alpha[i, j], 1 / kappa);
+        //Beta_1[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
+        //Beta_2[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
+        Beta[j,i,:] ~ normal(alpha[i, j], 1 / kappa);
+        
         for (t in 1:N_MY[j, i]){                                                  
-          y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);            
+          //y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);  
+          y[t + n] ~ bernoulli_logit(Beta[j, i, 1] + Beta[j, i, 2] * age[t + n] + Beta[j, i, 3] * miles[t + n]);   
         }
         n = n + N_MY[j, i];                                                       
       }

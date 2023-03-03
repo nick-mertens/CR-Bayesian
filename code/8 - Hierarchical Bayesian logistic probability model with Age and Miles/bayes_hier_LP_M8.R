@@ -177,9 +177,10 @@ parameters {
   real mu;                                   //Make-level mean parameter for normal priors
   real rho[n_mmt];                           //MMT-level mean parameter for normal priors
   real alpha[n_mmt, n_years];                //My-level mean parameter for normal priors
-  real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
-  real Beta_1[n_years, n_mmt];         //Logistic regression coefficient for age at Make-MMT-MY level
-  real Beta_2[n_years, n_mmt];         //Logistic regression coefficient for miles at Make-MMT-MY level
+  //real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
+  //real Beta_1[n_years, n_mmt];         //Logistic regression coefficient for age at Make-MMT-MY level
+  //real Beta_2[n_years, n_mmt];         //Logistic regression coefficient for miles at Make-MMT-MY level
+  real Beta[n_years, n_mmt, 3];
 }
 
 model {
@@ -191,12 +192,14 @@ model {
     for (j in 1:n_years){                                                                                                             
       if (N_MY[j,i] > 0){                                                      
         alpha[i, j] ~ normal(rho[i], 1/ kappa);                                                     
-        Beta_0[j, i] ~ normal(0, 1 / kappa);
-        Beta_1[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
-        Beta_2[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
-  
+        //Beta_0[j, i] ~ normal(alpha[i, j], 1 / kappa);
+        //Beta_1[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
+        //Beta_2[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
+        Beta[j,i,:] ~ normal(alpha[i, j], 1 / kappa);
+        
         for (t in 1:N_MY[j, i]){                                                  
-          y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);            
+          //y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);  
+          y[t + n] ~ bernoulli_logit(Beta[j, i, 1] + Beta[j, i, 2] * age[t + n] + Beta[j, i, 3] * miles[t + n]);   
         }
         n = n + N_MY[j, i];                                                       
       }
@@ -243,7 +246,7 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # addi
       cores = detectCores(),
       thin = 10,
       init_r = 0,
-      #control = list(adapt_delta = 0.99),
+      control = list(max_treedepth=10),
       seed = 1231,
       verbose = FALSE
     )
@@ -275,8 +278,6 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
   temp_df = data_filter_func(df, make, problem_area)
   years = length(unique(temp_df$MY))
   
-  # convert categorical features to factors
-  temp_df$MY = as.factor(temp_df$MY)
   # create Stan Data 
   stan_data = stan_data_func(temp_df, years, problem_area)
   
@@ -292,7 +293,7 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
   temp_df = temp_df %>%
     select(MakeName, MMT, MY, problem_area, y_pred)
   
-  # Compute naive probability (# of total problem count / # of total row count) and predicted probability
+  # Compute mean naive probability & predicted probability 
   res_df = temp_df %>%
     group_by(MakeName, MMT, MY) %>% 
     summarise(cnt=n(), round(across(everything(), list(mean=mean)), 4))
@@ -308,11 +309,10 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
 #   run_model(df, iter=iter, chains=chain, c("Mercedes-Benz"), "q19_2")
 # }
 
-# run_model(df, iter=5000, chains=12, c("Nissan"), "q19_2")
+run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
 
 # Example Compute Probability
-# M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_20000_12.rds", 
-#                          problem_area = "q19_2", coef_mode="mode")
+#M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
 # 
 # View resulting table
-# view(M8_res_df)
+#view(M8_res_df)
