@@ -1,5 +1,7 @@
 #Setting work Directory
-working_directory = "set it to data file destination"
+# working_directory = "set it to data file destination"
+working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
+
 setwd(working_directory)
 
 #Importing required packages
@@ -28,6 +30,7 @@ library(bayestestR)
 library(rstanarm)
 library(comprehenr)
 library(ggplot2)
+library(loo)
 
 # load in the data
 df = read.csv("mixeddata052722.csv")
@@ -114,6 +117,7 @@ parameters {
   //real Beta_2[n_years, n_mmt];             //Logistic regression coefficient for miles at Make-MMT-MY level
   real Beta[n_years, n_mmt, 2];              //Coefficients for Age & Mileage at Make-MMT-MY level - Combined Beta_1 & Beta_2 into Beta array
 }
+
 model {
   int n = 0;                                                                                //** The int n initialization was moved to the first line. 
   kappa ~ gamma(1, 1);                                                                      //Make-level prior uncertainty parameter
@@ -132,8 +136,35 @@ model {
           //y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);
           y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta[j, i, 1] * age[t + n] + Beta[j, i, 2] * miles[t + n]);   
         }
-        }
         n = n + N_MY[j, i];                                                                 //to keep track of number of observation per MMT:MY
+      }
+    }
+  }
+}
+
+generated quantities {
+  // Declare a vector of length N to store the log likelihood for each observation
+  vector[N] log_lik;
+  
+  {
+    // Initialize a counter to keep track of the current observation number
+    int n = 0;
+    
+    // Loop over each unique combination of i, j, and t
+    for (i in 1:n_mmt) {
+      for (j in 1:n_years) {
+        if (N_MY[j,i] > 0) {
+          for (t in 1:N_MY[j,i]) {
+            // Calculate the log likelihood for the current observation using the
+            // bernoulli_logit_lpmf function, which takes the observation y[t+n], and
+            // the predicted log odds ratio Beta_0[j,i] + Beta[j,i,1]*age[t+n] + 
+            // Beta[j,i,2]*miles[t+n].
+            log_lik[t + n] = bernoulli_logit_lpmf(y[t + n] | Beta_0[j,i] + Beta[j,i,1]*age[t + n] + Beta[j,i, 2]*miles[t + n]);
+          }
+          // Increment the counter by the number of observations for the current 
+          // combination of i and j
+          n = n + N_MY[j,i];
+        }
       }
     }
   }
@@ -143,7 +174,7 @@ model {
 
 ## fitting the Bayesian model with MCMC
 fit <- stan(
-  file = here::here("hier_LG_model8.stan"), # stan hierarchical model built above
+  file = here::here("code", "8 - Hierarchical Bayesian logistic probability model with Age and Miles","hier_LG_model8.stan"), # stan hierarchical model built above
   data = stan_data, # feeding stan data
   iter = 8000, # number of MCMC iterations
   warmup = 1000, # number of warm-up iterations
@@ -160,6 +191,12 @@ saveRDS(fit, "fit_model8_nissan_standardized.rds")
 
 # If model already run, load it in
 fit <- readRDS("fit_model8_acura_standardized.rds")
+
+## checking the loo CV
+fit_log <- extract_log_lik(fit, "log_lik", merge_chains = F)
+fit_eff <- relative_eff(fit_log)
+waic(fit_log)
+loo(fit_log, r_eff = fit_eff)
 
 # plotting the MCMC chain results for diagnosis
 plot(fit, pars = c("mu", "Beta_0", "Beta_1", "Beta_2"))

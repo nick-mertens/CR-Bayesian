@@ -1,5 +1,7 @@
 #Setting work Directory
-working_directory = "set it to data file destination"
+# working_directory = "set it to data file destination"
+working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code/7 - Hierarchical Bayesian logistic probability model with Age"
+
 setwd(working_directory)
 
 #Importing required packages
@@ -22,6 +24,7 @@ library(matrixStats)
 library(TeachingDemos)
 library(tidyr)
 library(here)
+library(loo)
 
 ################################################################################
 #### SET INITIAL VARIABLES #####################################################
@@ -163,13 +166,31 @@ model {
   }
 }
 
+generated quantities {
+  vector[N] log_lik;
+  int n = 0;
+  for (i in 1:n_mmt){
+    for (j in 1:n_years){
+      if (sum(N_MY_MileGrpATC[j, , i]) > 0){
+        for (k in 1:n_grps){
+          if (N_MY_MileGrpATC[j, k, i] > 0){
+            for (t in 1:N_MY_MileGrpATC[j, k, i]){
+              log_lik[t + n] = bernoulli_logit_lpmf(y[t + n] | Beta_0[j, k, i] + Beta[j, k, i] * age[t + n]);
+            }
+            n = n + N_MY_MileGrpATC[j, k, i];
+          }
+        }
+      }    
+    }
+  }
+}
 
 ", 
 "hier_reg_gen_quant.stan")
 
 ## fitting the Bayesian model with MCMC
 fit <- stan(
-  file = here::here("hier_reg_gen_quant.stan"), # stan hierarchical model built above
+  file = here::here("code", "7 - Hierarchical Bayesian logistic probability model with Age", "hier_reg_gen_quant.stan"), # stan hierarchical model built above
   data = stan_data, # feeding stan data
   iter = 8000, # number of MCMC iterations
   warmup = 1000, # number of warm-up iterations
@@ -179,6 +200,12 @@ fit <- stan(
   control = list(adapt_delta = 0.99), # learning rate
   seed = 1231
 )
+
+## checking the loo CV
+fit_log <- extract_log_lik(fit, "log_lik", merge_chains = F)
+fit_eff <- relative_eff(fit_log)
+waic(fit_log)
+loo(fit_log, r_eff = fit_eff)
 
 ## plotting the MCMC chain results for diagnosis
 #### divergence plot of MCMC chains, chain mix

@@ -44,4 +44,22 @@ model {
   }
 }
 
+generated quantities {
+  vector[N] log_lik;
+  int n = 0;
+  for (i in 1:n_mmt){
+    for (j in 1:n_years){
+      if (sum(N_MY_MileGrpATC[j, , i]) > 0){
+        for (k in 1:n_grps){
+          if (N_MY_MileGrpATC[j, k, i] > 0){
+            for (t in 1:N_MY_MileGrpATC[j, k, i]){
+              log_lik[t + n] = bernoulli_logit_lpmf(y[t + n] | Beta_0[j, k, i] + Beta_1[j, k, i] * age[t + n]);
+            }
+            n = n + N_MY_MileGrpATC[j, k, i];
+          }
+        }
+      }    
+    }
+  }
+}
 
