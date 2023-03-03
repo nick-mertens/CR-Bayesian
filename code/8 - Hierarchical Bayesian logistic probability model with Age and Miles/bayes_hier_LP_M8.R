@@ -1,7 +1,6 @@
 #Setting work Directory
-working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2022 Bayesian Modeling - Phase I/05-Data"
+working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
 setwd(working_directory)
-getwd()
 
 #Importing required packages
 library(dplyr)
@@ -29,6 +28,7 @@ library(bruceR)
 # Read original file into df
 df = read.csv("mixeddata052722.csv")
 
+
 # There are 3 unique years - 2018, 2019, 2020
 years = length(unique(df$MY))
 min_year = min(df$MY)
@@ -50,13 +50,13 @@ data_filter_func = function(df, make, problem_area){ # adding variable to allow 
 }
 
 stan_data_func = function(df, years, problem_area){ # adding variable to allow for choice of problem area - NM 02/28/23
-  ## Create stan data
+  ## create stan data
   #### observations, their length, and a matrix that counts the number of
   #### observations per MMT:MY. For incomplete MMT, the matrix is
   #### filled with zeros
   y = df[[problem_area]]
-  age = df$Age_scaled
-  miles = df$Miles_scaled
+  age = df$Age_scaled  # assign scaled ages
+  miles = df$Miles_scaled  # assign scaled mileages 
   N = length(y)
   n_mmt = length(unique(df$MMT))
   
@@ -99,21 +99,29 @@ max_density_func <- function(x) {
   return(density(x)$x[max_density_x])
 }
 
-extract_coef_func <- function(fit){
+extract_coef_func <- function(fit, coef_mode=c("mode","mean")){
   ## extract Bayesian logistic coefficients from the object fit
   mcmc_df = as.data.frame(fit)
   
   Beta0_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_0[')]
   Beta0_df = mcmc_df[, names(mcmc_df) %in% Beta0_cols]
-  Beta0_values = apply(Beta0_df, MARGIN=2, FUN=max_density_func)
   
-  Beta1_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_1[')]
+  Beta1_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta[') & endsWith(colnames(mcmc_df), '1]')]
   Beta1_df = mcmc_df[, names(mcmc_df) %in% Beta1_cols]
-  Beta1_values = apply(Beta1_df, MARGIN=2, FUN=max_density_func)
   
-  Beta2_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta_2[')]
+  Beta2_cols = colnames(mcmc_df)[startsWith(colnames(mcmc_df), 'Beta[') & endsWith(colnames(mcmc_df), '2]')]
   Beta2_df = mcmc_df[, names(mcmc_df) %in% Beta2_cols]
-  Beta2_values = apply(Beta2_df, MARGIN=2, FUN=max_density_func)
+  
+  # Coefficient selection mode
+  if (coef_mode == "mode") {
+    Beta0_values = apply(Beta0_df, MARGIN=2, FUN=max_density_func)
+    Beta1_values = apply(Beta1_df, MARGIN=2, FUN=max_density_func)
+    Beta2_values = apply(Beta2_df, MARGIN=2, FUN=max_density_func)
+  } else {
+    Beta0_values = colMeans(Beta0_df)
+    Beta1_values = colMeans(Beta1_df)
+    Beta2_values = colMeans(Beta2_df)
+  }
   
   return(list(b2 = Beta2_values, b1 = Beta1_values, b0 = Beta0_values))
 }
@@ -130,8 +138,8 @@ predict_func <- function(stan_data, coef, df){
       if (stan_data$N_MY[j, i] > 0){
         for (t in 1:stan_data$N_MY[j, i]){
           b0_name = paste('Beta_0[', j, ',', i, ']', sep = "")
-          b1_name = paste('Beta_1[', j, ',', i, ']', sep = "")
-          b2_name = paste('Beta_2[', j, ',', i, ']', sep = "")
+          b1_name = paste('Beta[', j, ',', i, ',1]', sep = "")
+          b2_name = paste('Beta[', j, ',', i, ',2]', sep = "")
           Beta0 = coef$b0[b0_name]
           Beta1 = coef$b1[b1_name]
           Beta2 = coef$b2[b2_name]
@@ -170,8 +178,7 @@ parameters {
   real rho[n_mmt];                           //MMT-level mean parameter for normal priors
   real alpha[n_mmt, n_years];                //My-level mean parameter for normal priors
   real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
-  real Beta_1[n_years, n_mmt];         //Logistic regression coefficient for age at Make-MMT-MY level
-  real Beta_2[n_years, n_mmt];         //Logistic regression coefficient for miles at Make-MMT-MY level
+  real Beta[n_years, n_mmt, 2];
 }
 
 model {
@@ -184,20 +191,18 @@ model {
       if (N_MY[j,i] > 0){                                                      
         alpha[i, j] ~ normal(rho[i], 1/ kappa);                                                     
         Beta_0[j, i] ~ normal(0, 1 / kappa);
-        Beta_1[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
-        Beta_2[j, i] ~ normal(alpha[i, j], 1 / kappa);                                      //MMT:MY-level prior problem rate
-  
+        Beta[j,i,:] ~ normal(alpha[i, j], 1 / kappa);
+        
         for (t in 1:N_MY[j, i]){                                                  
-          y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta_1[j, i] * age[t + n] + Beta_2[j, i] * miles[t + n]);            
+          y[t + n] ~ bernoulli_logit(Beta_0[j, i] + Beta[j, i, 1] * age[t + n] + Beta[j, i, 2] * miles[t + n]);   
         }
         n = n + N_MY[j, i];                                                       
       }
     }
   }
 }
-
 ", 
-  "hier_LG.stan")
+  "hier_LG_M8.stan")
 
 ## set Stan options for parallel computing
 options(mc.cores = parallel::detectCores())
@@ -206,7 +211,7 @@ rstan_options(auto_write = TRUE)
 ################################################################################
 ######## main loop starts here
 
-run_model <- function(df, make_list, problem_area) { # adding variable to allow for choice of problem area - NM 02/28/23
+run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # adding variable to allow for choice of problem area - NM 02/28/23
   ## generate an empty data frame to store Bayesian results
   #bayes_coef = data.frame()
   #bayes_pred = data.frame()
@@ -220,8 +225,6 @@ run_model <- function(df, make_list, problem_area) { # adding variable to allow 
   #### 3- MCMC chains are run
   #### 4- results are filtered and written to file
   
-  # Number of iterations
-  iter = 20000
   res_df = data.frame()
   
   for (make in (make_list)){
@@ -229,31 +232,74 @@ run_model <- function(df, make_list, problem_area) { # adding variable to allow 
     stan_data = stan_data_func(temp_df, years, problem_area)
     
     fit <- stan(
-      file = "hier_LG_model8.stan",
+      file = "hier_LG_M8.stan",
       data = stan_data,
       iter = iter,
       warmup = 1000,
-      #chains = detectCores(), # number of chains
-      chains = 8,
+      chains = chains,
       cores = detectCores(),
       thin = 10,
-      init_r = 0,
-      #control = list(adapt_delta = 0.99),
+      init_r = 1,
+      #control = list(max_treedepth=10),
       seed = 1231,
       verbose = FALSE
     )
     # Save the Model
-    saveRDS(fit, paste("fit_M8_", as.character(iter), "_", make, ".rds", sep=""))
-    
-    coef = extract_coef_func(fit)
-    pred_res = predict_func(stan_data, coef, temp_df)
-    
-    temp_df['y_pred'] = pred_res$y_new
-    temp_df = temp_df %>%
-      select(MakeName, MMT, MY, q19_2, y_pred)
-    res_df = rbind(res_df, temp_df)
+    saveRDS(fit, paste("models/fit_", make, "_M8_", as.character(iter), "_", as.character(chains),".rds", sep=""))
   }
 }
 
-# Example Run
-run_model(df, c("Acura"), "q19_2")
+pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean")) {
+  ## Compute naive and predicted probabilities by MMT-MY
+  # Parameter 1: Original Dataframe
+  # Parameter 2: Trained Stanfit model name
+  # Parameter 3: Problem area of interest
+  # Parameter 4: Coefficient selection mode. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
+  
+  # Extract Make Name from fit model
+  make = str_split(fit_model_name, "_")[[1]][2]
+  
+  # Filter data
+  temp_df = data_filter_func(df, make, problem_area)
+  years = length(unique(temp_df$MY))
+  
+  # create Stan Data 
+  stan_data = stan_data_func(temp_df, years, problem_area)
+  
+  # Call Stan model
+  loaded_fit <- readRDS(fit_model_name)
+  
+  # Predict
+  coef = extract_coef_func(loaded_fit, coef_mode)
+  pred_res = predict_func(stan_data, coef, temp_df)
+  
+  temp_df['y_pred'] = pred_res$y_new
+  
+  temp_df = temp_df %>%
+    select(MakeName, MMT, MY, problem_area, y_pred)
+  
+  # Compute mean naive probability & predicted probability 
+  res_df = temp_df %>%
+    group_by(MakeName, MMT, MY) %>% 
+    summarise(cnt=n(), round(across(everything(), list(mean=mean)), 4))
+  
+  res_df = subset(res_df, select = -c(cnt_mean))
+  
+  return(res_df)
+}
+
+
+
+# # Example Train
+# for (iter in c(5000, 10000, 20000)) {
+#   for (chain in c(4, 8, 12))
+#   run_model(df, iter=iter, chains=chain, c("Mercedes-Benz"), "q19_2")
+# }
+
+#run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
+
+# Example Compute Probability
+#M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
+# 
+# View resulting table
+#view(M8_res_df)
