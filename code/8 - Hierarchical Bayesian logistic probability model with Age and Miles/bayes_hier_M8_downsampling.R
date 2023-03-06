@@ -23,12 +23,8 @@ complete_res_df = data.frame()
 nissan_rogue_df = df[df$MMT == "Nissan Rogue", ]
 
 # set up sampling parameter
-<<<<<<< HEAD
 sample_list = c(600, 400, 200)
-=======
 #sample_list = c(600, 500, 400, 300, 200, 100)
-sample_list = c(600)
->>>>>>> jaelee
 
 # run the for loop
 for(sample_num in sample_list){
