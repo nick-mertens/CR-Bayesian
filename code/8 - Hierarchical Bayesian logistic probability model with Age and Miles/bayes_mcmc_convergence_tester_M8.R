@@ -77,14 +77,26 @@ conv_test = function(fit_model_name, show_params=FALSE, plot_chains=FALSE) {
   return(loaded_fit)
 }
 
-plot_posterior = function(model_path="models/", MakeName) {
+plot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chains=NULL) {
   # Plot posterior distributions of parameters for Stanfit objects
   # Parameter 1: path where Stanfit objects are located
   # Parameter 2: Name of the Make
+  # Parameter 3: index of MMT
+  # Parameter 4: index of MY
+  # Parameter 5: Filter models by number of iterations (List)
+  # Parameter 5: Filter models by number of chains (List)
   
   # Collect all Stanfit objects of the input Make
   rds_list = list.files("models/")
   rds_list = to_list(for (m in rds_list) if (grepl(MakeName, m, fixed=TRUE)) m)
+  
+  if (!is.null(iter)) {
+    rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][4] %in% iter) m)
+  }
+  
+  if (!is.null(chains)) {
+    rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][5] %in% chains) m)
+  }
   
   # Parameters of interests: mu, kappa, rho, beta_0, beta_1, beta_2
   mu_df = data.frame()
@@ -95,17 +107,17 @@ plot_posterior = function(model_path="models/", MakeName) {
   beta2_df <- data.frame()
   
   for (r in rds_list) {
-    loaded_fit = conv_test(paste("models/", r, sep=""), show_params=TRUE, plot_chains=TRUE)
-    iter = str_split(r, "_|\\.")[[1]][4]
-    chains = str_split(r, "_|\\.")[[1]][5]
+    loaded_fit <- readRDS(paste("models/", r, sep=""))
+    iter_num = str_split(r, "_|\\.")[[1]][4]
+    chains_num = str_split(r, "_|\\.")[[1]][5]
     
     # Save parameter name as well as iterations & chains information 
-    mu_df <- rbind(mu_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), mu=as.data.frame(loaded_fit)$mu))
-    kappa_df <- rbind(kappa_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), kappa=as.data.frame(loaded_fit)$kappa))
-    rho_df <- rbind(rho_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), rho=extract(loaded_fit)$rho[,1]))
-    beta0_df <- rbind(beta0_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta0=extract(loaded_fit)$Beta_0[,1,1]))
-    beta1_df <- rbind(beta1_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta1=extract(loaded_fit)$Beta_1[,1,1]))
-    beta2_df <- rbind(beta2_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta2=extract(loaded_fit)$Beta_2[,1,1]))
+    mu_df <- rbind(mu_df, data.frame(iter_chains=paste(iter_num,"_",chains_num,sep=""), mu=as.data.frame(loaded_fit)$mu))
+    kappa_df <- rbind(kappa_df, data.frame(iter_chains=paste(iter_num,"_",chains_num,sep=""), kappa=as.data.frame(loaded_fit)$kappa))
+    rho_df <- rbind(rho_df, data.frame(iter_chains=paste(iter_num,"_",chains_num,sep=""), rho=extract(loaded_fit)$rho[,1]))
+    beta0_df <- rbind(beta0_df, data.frame(iter_chains=paste(iter_num,"_",chains_num,sep=""), beta0=extract(loaded_fit)$Beta_0[,j,i]))
+    beta1_df <- rbind(beta1_df, data.frame(iter_chains=paste(iter_num,"_",chains_num,sep=""), beta1=extract(loaded_fit)$Beta[,j,i,1]))
+    beta2_df <- rbind(beta2_df, data.frame(iter_chains=paste(iter_num,"_",chains_num,sep=""), beta2=extract(loaded_fit)$Beta[,j,i,2]))
   }
   
   # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training
@@ -118,4 +130,4 @@ plot_posterior = function(model_path="models/", MakeName) {
   ggarrange(mu, kappa, rho, beta0, beta1, beta2, ncol=3, nrow=2, common.legend=TRUE)
 }
 
-plot_posterior("models/","Acura")
+plot_posterior("models/","Acura",1,1,iter=NULL,chains=c("12"))

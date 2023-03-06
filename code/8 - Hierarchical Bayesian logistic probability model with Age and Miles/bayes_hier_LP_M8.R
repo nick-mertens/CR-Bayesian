@@ -1,6 +1,6 @@
 #Setting work Directory
-# working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
-working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
+working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
+#working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
 setwd(working_directory)
 
 #Importing required packages
@@ -281,9 +281,9 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # addi
 pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean")) {
   ## Compute naive and predicted probabilities by MMT-MY
   # Parameter 1: Original Dataframe
-  # Parameter 2: Trained Stanfit model name
+  # Parameter 2: Trained Stanfit model name - Specify file paths 
   # Parameter 3: Problem area of interest
-  # Parameter 4: Coefficient selection mode. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
+  # Parameter 4: Coefficient selection method. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
   
   # Extract Make Name from fit model
   make = str_split(fit_model_name, "_")[[1]][2]
@@ -344,11 +344,11 @@ calculate_diagnostics <- function(filename){
 #   run_model(df, iter=iter, chains=chain, c("Mercedes-Benz"), "q19_2")
 # }
 
-# run_model(df, iter=5000, chains=12, c("Acura"), "q19_2")
+run_model(df, iter=5000, chains=12, c("Nissan"), "q19_2")
 # calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
 
 # Example Compute Probability
-#M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
+#M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_8.rds", problem_area = "q19_2", coef_mode="mode")
 # 
 # View resulting table
 #view(M8_res_df)
