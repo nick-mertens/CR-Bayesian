@@ -240,13 +240,17 @@ rstan_options(auto_write = TRUE)
 ################################################################################
 ######## main loop starts here
 
-run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # adding variable to allow for choice of problem area - NM 02/28/23
+run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE) { # adding variable to allow for choice of problem area - NM 02/28/23
+  # df: Original DataFrame
+  # iter: # of iterations to run MCMC
+  # chains: # of MCMC chains
+  # make_list: List of makes 
+  # problem_area: Specific problem area
+  # save_fit: whether to save the stanfit object
+  
   ## generate an empty data frame to store Bayesian results
   #bayes_coef = data.frame()
   #bayes_pred = data.frame()
-  
-  ## initialize an iterator to show progression
-  i = 0
   
   ## Bayesian hierarchical models are run for each MMT
   #### 1- data is filtered for each MMT
@@ -255,35 +259,39 @@ run_model <- function(df, iter=5000, chains=4, make_list, problem_area) { # addi
   #### 4- results are filtered and written to file
   
   res_df = data.frame()
+  temp_df = data_filter_func(df, make, problem_area)
+  stan_data = stan_data_func(temp_df, years, problem_area)
   
-  for (make in (make_list)){
-    temp_df = data_filter_func(df, make, problem_area)
-    stan_data = stan_data_func(temp_df, years, problem_area)
-    
-    fit <- stan(
-      file = "hier_LG_M8.stan",
-      data = stan_data,
-      iter = iter,
-      warmup = 1000,
-      chains = chains,
-      cores = detectCores(),
-      thin = 10,
-      init_r = 1,
-      #control = list(max_treedepth=10),
-      seed = 1231,
-      verbose = FALSE
-    )
-    # Save the Model
+  fit <- stan(
+    file = "hier_LG_M8.stan",
+    data = stan_data,
+    iter = iter,
+    warmup = 1000,
+    chains = chains,
+    cores = detectCores(),
+    thin = 10,
+    init_r = 1,
+    #control = list(max_treedepth=10),
+    seed = 1231,
+    verbose = FALSE
+  )
+  
+  # Save the Model if save_fit = TRUE
+  if (save_fit) {
     saveRDS(fit, paste("models/fit_", make, "_M8_", as.character(iter), "_", as.character(chains),".rds", sep=""))
   }
+  
+  return(fit)
+  
 }
 
-pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean")) {
+pred_prob <- function(df, fit_model_name=NULL, fit_model=NULL, problem_area, coef_mode=c("mode","mean")) {
   ## Compute naive and predicted probabilities by MMT-MY
   # Parameter 1: Original Dataframe
   # Parameter 2: Trained Stanfit model name - Specify file paths 
-  # Parameter 3: Problem area of interest
-  # Parameter 4: Coefficient selection method. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
+  # Parameter 3: Trained Stanfit model file - .rds file (Need either one of model name or model rds file)
+  # Parameter 4: Problem area of interest
+  # Parameter 5: Coefficient selection method. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
   
   # Extract Make Name from fit model
   make = str_split(fit_model_name, "_")[[1]][2]
@@ -295,8 +303,12 @@ pred_prob <- function(df, fit_model_name, problem_area, coef_mode=c("mode","mean
   # create Stan Data 
   stan_data = stan_data_func(temp_df, years, problem_area)
   
-  # Call Stan model
-  loaded_fit <- readRDS(fit_model_name)
+  # Call Stan model if model name is given
+  if (!is.null(fit_model_name)) {
+    loaded_fit <- readRDS(fit_model_name)
+  } else {
+    loaded_fit <- fit_model
+  }
   
   # Predict
   coef = extract_coef_func(loaded_fit, coef_mode)
@@ -341,10 +353,10 @@ calculate_diagnostics <- function(filename){
 # # Example Train
 # for (iter in c(5000, 10000, 20000)) {
 #   for (chain in c(4, 8, 12))
-#   run_model(df, iter=iter, chains=chain, c("Mercedes-Benz"), "q19_2")
+#   run_model(df, iter=iter, chains=chain, "Mercedes-Benz", "q19_2")
 # }
 
-run_model(df, iter=5000, chains=12, c("Nissan"), "q19_2")
+#run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
 # calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
 
 # Example Compute Probability
