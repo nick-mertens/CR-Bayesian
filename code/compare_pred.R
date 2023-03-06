@@ -1,7 +1,8 @@
 library(stringr)
 
 #Setting work Directory
-org_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code"
+# org_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code"
+org_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code"
 setwd(org_directory)
 
 m7_dir = "7 - Hierarchical Bayesian logistic probability model with Age/"
