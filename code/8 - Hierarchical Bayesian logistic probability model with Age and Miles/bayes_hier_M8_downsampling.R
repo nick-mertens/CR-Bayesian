@@ -19,7 +19,6 @@ set.seed(1231)
 complete_res_df = data.frame()
 
 # break up the data to sample from Nissan Rogue group
-training_df = df[df$MMT != "Nissan Rogue", ]
 nissan_rogue_df = df[df$MMT == "Nissan Rogue", ]
 
 # set up sampling parameter
@@ -27,6 +26,9 @@ sample_list = c(600, 500, 400, 300, 200, 100)
 
 # run the for loop
 for(sample_num in sample_list){
+  # break up training data to remove the nissan rogue rows
+  training_df = df[df$MMT != "Nissan Rogue", ]
+  
   # sample from the nissan_rogue_df
   nissan_rogue_sample = nissan_rogue_df[sample(nrow(nissan_rogue_df), sample_num), ]
   
@@ -52,5 +54,9 @@ for(sample_num in sample_list){
   complete_res_df <- rbind(complete_res_df, nissan_res_df)
 }
 
+# check the file
 view(complete_res_df)
+
+# write file to csv
+write.csv(complete_res_df, "nissan_rogue_downsampling.csv")
 
