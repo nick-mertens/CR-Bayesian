@@ -285,7 +285,7 @@ run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE
   
 }
 
-pred_prob <- function(df, fit_model_name=NULL, fit_model=NULL, problem_area, coef_mode=c("mode","mean")) {
+pred_prob <- function(df, fit_model_name=NULL,problem_area, coef_mode=c("mode","mean")) {
   ## Compute naive and predicted probabilities by MMT-MY
   # Parameter 1: Original Dataframe
   # Parameter 2: Trained Stanfit model name - Specify file paths 
@@ -304,11 +304,8 @@ pred_prob <- function(df, fit_model_name=NULL, fit_model=NULL, problem_area, coe
   stan_data = stan_data_func(temp_df, years, problem_area)
   
   # Call Stan model if model name is given
-  if (!is.null(fit_model_name)) {
-    loaded_fit <- readRDS(fit_model_name)
-  } else {
-    loaded_fit <- fit_model
-  }
+  loaded_fit <- readRDS(fit_model_name)
+
   
   # Predict
   coef = extract_coef_func(loaded_fit, coef_mode)

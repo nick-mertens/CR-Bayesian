@@ -23,8 +23,12 @@ complete_res_df = data.frame()
 nissan_rogue_df = df[df$MMT == "Nissan Rogue", ]
 
 # set up sampling parameter
-#sample_list = c(600, 500, 400, 300, 200, 100)
-sample_list = c(600)
+sample_list = c(300, 200, 100)
+#sample_list = c(600)
+
+make = "Nissan"
+iter = 5000
+chains = 12
 
 # run the for loop
 for(sample_num in sample_list){
@@ -38,14 +42,14 @@ for(sample_num in sample_list){
   training_df = rbind(training_df, nissan_rogue_sample)
   
   # run the model 
-  fit = run_model(training_df, make = "Nissan", chains=8, problem_area = "q19_2", save_fit=FALSE)
+  fit = run_model(training_df, make = "Nissan", iter=iter, chains=chains, problem_area = "q19_2", save_fit=FALSE)
   
   # Save the model
   saveRDS(fit, paste("models/fit_", make, "_M8_", as.character(iter), "_", as.character(chains), "_rogue_ds", "_", sample_num,".rds", sep=""))
   
   # collect the prediction scores for the nissan model
   res_df = pred_prob(training_df, 
-                     fit_model = fit, 
+                     fit_model_name =  paste("models/fit_", make, "_M8_", as.character(iter), "_", as.character(chains), "_rogue_ds", "_", sample_num,".rds", sep=""), 
                      problem_area = "q19_2", 
                      coef_mode="mode")
   
