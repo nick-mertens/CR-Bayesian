@@ -1,0 +1,20 @@
+,MakeName,MMT,MY,cnt,q19_2_mean,y_pred_mean,sample_num
+1,Nissan,Nissan Rogue,2018,292,0.0103,0.0094,600
+2,Nissan,Nissan Rogue,2019,224,0.0045,0.0068,600
+3,Nissan,Nissan Rogue,2020,84,0,0.0116,600
+4,Nissan,Nissan Rogue,2018,246,0.0081,0.0067,500
+5,Nissan,Nissan Rogue,2019,183,0.0055,0.0129,500
+6,Nissan,Nissan Rogue,2020,71,0,0.017,500
+7,Nissan,Nissan Rogue,2018,209,0.0096,0.016,400
+8,Nissan,Nissan Rogue,2019,135,0,0.0089,400
+9,Nissan,Nissan Rogue,2020,56,0,0.0136,400
+10,Nissan,Nissan Rogue,2018,158,0.0127,0.0074,300
+11,Nissan,Nissan Rogue,2019,110,0,0.0038,300
+12,Nissan,Nissan Rogue,2020,32,0,0.0045,300
+13,Nissan,Nissan Rogue,2018,95,0.0105,0.0067,200
+14,Nissan,Nissan Rogue,2019,70,0,0.0101,200
+15,Nissan,Nissan Rogue,2020,35,0,0.0139,200
+16,Nissan,Nissan Rogue,2018,53,0.0189,0.0067,100
+17,Nissan,Nissan Rogue,2019,32,0,0.0154,100
+18,Nissan,Nissan Rogue,2020,15,0,0.0252,100
+,,,,,,,
