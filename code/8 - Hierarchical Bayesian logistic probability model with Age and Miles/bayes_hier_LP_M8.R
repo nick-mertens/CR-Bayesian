@@ -1,6 +1,6 @@
 #Setting work Directory
-working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
-#working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
+# working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
+working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles"
 setwd(working_directory)
 
 #Importing required packages
@@ -285,7 +285,7 @@ run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE
   
 }
 
-pred_prob <- function(df, fit_model_name=NULL, fit_model=NULL, problem_area, coef_mode=c("mode","mean")) {
+pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode","mean")) {
   ## Compute naive and predicted probabilities by MMT-MY
   # Parameter 1: Original Dataframe
   # Parameter 2: Trained Stanfit model name - Specify file paths 
