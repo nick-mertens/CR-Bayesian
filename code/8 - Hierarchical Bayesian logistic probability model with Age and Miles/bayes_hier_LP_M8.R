@@ -353,7 +353,7 @@ calculate_diagnostics <- function(filename){
 #   run_model(df, iter=iter, chains=chain, "Mercedes-Benz", "q19_2")
 # }
 
-#run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
+run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
 # calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
 
 # Example Compute Probability
