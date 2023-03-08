@@ -353,11 +353,11 @@ calculate_diagnostics <- function(filename){
 #   run_model(df, iter=iter, chains=chain, "Mercedes-Benz", "q19_2")
 # }
 
-run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
+#run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
 # calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
 
 # Example Compute Probability
-#M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_8.rds", problem_area = "q19_2", coef_mode="mode")
+# M8_res_df = pred_prob(df, fit_model_name="models/fit_Nissan_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
 # 
 # View resulting table
 #view(M8_res_df)
