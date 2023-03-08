@@ -23,8 +23,8 @@ complete_res_df = data.frame()
 # break up the data to sample from Nissan Rogue group
 nissan_rogue_df = df[df$MMT == "Nissan Rogue", ]
 
-# set up sampling parameter
 sample_list = c(600, 500, 400)
+# sample_list = c(300, 200, 100)
 #sample_list = c(600, 500, 400, 300, 200, 100)
 
 make = "Nissan"
@@ -42,8 +42,7 @@ for(sample_num in sample_list){
   # combine the training_df with the sample of nissan rogue
   training_df = rbind(training_df, nissan_rogue_sample)
   
-  # run the model 
-  fit = run_model(training_df, make = "Nissan", iter = iter, chains=chains, problem_area = "q19_2", save_fit=FALSE)
+  fit = run_model(training_df, make = "Nissan", iter = iter, chains = chains, problem_area = "q19_2", save_fit=FALSE)
   
   # Save the model
   saveRDS(fit, paste("models/fit_", make, "_M8_", as.character(iter), "_", as.character(chains), "_rogue_ds", "_", sample_num,".rds", sep=""))
