@@ -1,5 +1,5 @@
 # Setting work Directory
-model_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8 - Hierarchical Bayesian logistic probability model with Age and Miles ver2"
+model_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8_v2 - Hierarchical Bayesian logistic probability model with Age and Miles"
 setwd(model_directory)
 
 source("bayes_hier_LP_M8_ver2.R")
