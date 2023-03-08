@@ -134,18 +134,22 @@ plot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chain
     beta2_df <- rbind(beta2_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), beta2=extract(loaded_fit)$Beta[,j,i,2]))
   }
   
+  size = 1.5
+  axis_theme = theme(axis.title.x = element_text(size = 24), axis.text.x = element_text(size = 16))
+  
   # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training
-  mu1 <- ggplot(mu1_df, aes(x=mu1, color=iter_chains)) + geom_density()
-  mu2 <- ggplot(mu2_df, aes(x=mu2, color=iter_chains)) + geom_density()
-  kappa1 <- ggplot(kappa1_df, aes(x=kappa1, color=iter_chains)) + geom_density()
-  kappa2 <- ggplot(kappa2_df, aes(x=kappa2, color=iter_chains)) + geom_density()
-  rho1 <- ggplot(rho1_df, aes(x=rho1, color=iter_chains)) + geom_density()
-  rho2 <- ggplot(rho2_df, aes(x=rho2, color=iter_chains)) + geom_density()
-  beta0 <- ggplot(beta0_df, aes(x=beta0, color=iter_chains)) + geom_density()
-  beta1 <- ggplot(beta1_df, aes(x=beta1, color=iter_chains)) + geom_density()
-  beta2 <- ggplot(beta2_df, aes(x=beta2, color=iter_chains)) + geom_density()
-  ggarrange(mu1, mu2, kappa1, kappa2, rho1, rho2, beta0, beta1, beta2, ncol=3, nrow=3, common.legend=TRUE)
+  mu1 <- ggplot(mu1_df, aes(x=mu1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  mu2 <- ggplot(mu2_df, aes(x=mu2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  kappa1 <- ggplot(kappa1_df, aes(x=kappa1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  kappa2 <- ggplot(kappa2_df, aes(x=kappa2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  rho1 <- ggplot(rho1_df, aes(x=rho1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  rho2 <- ggplot(rho2_df, aes(x=rho2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  beta0 <- ggplot(beta0_df, aes(x=beta0, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  beta1 <- ggplot(beta1_df, aes(x=beta1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  beta2 <- ggplot(beta2_df, aes(x=beta2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  figure <- ggarrange(mu1, mu2, kappa1, kappa2, rho1, rho2, beta0, beta1, beta2, ncol=3, nrow=3, common.legend=TRUE) 
+  annotate_figure(figure, fig.lab.size=16)
 }
 
-conv_test("models/fit_Acura_M8_v2_5000_12.rds", "q19_2")
-#plot_posterior("models/","Acura",1,1,iter=NULL,chains=NULL,downsampled=FALSE)
+#conv_test("models/fit_Acura_M8_v2_5000_12.rds", "q19_2")
+plot_posterior("models/","Acura",1,1,iter=NULL,chains=NULL,downsampled=FALSE)
