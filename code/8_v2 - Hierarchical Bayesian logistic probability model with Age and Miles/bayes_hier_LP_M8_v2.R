@@ -30,7 +30,6 @@ library(loo)
 # Read original file into df
 df = read.csv("mixeddata052722.csv")
 
-
 # There are 3 unique years - 2018, 2019, 2020
 years = length(unique(df$MY))
 min_year = min(df$MY)
@@ -311,7 +310,6 @@ pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode",
   # Call Stan model if model name is given
   loaded_fit <- readRDS(fit_model_name)
 
-  
   # Predict
   coef = extract_coef_func(loaded_fit, coef_mode)
   pred_res = predict_func(stan_data, coef, temp_df)
@@ -321,12 +319,13 @@ pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode",
   temp_df = temp_df %>%
     select(MakeName, MMT, MY, problem_area, y_pred)
   
-  # Compute mean naive probability & predicted probability 
+  # Compute mean cell probability & predicted probability 
   res_df = temp_df %>%
     group_by(MakeName, MMT, MY) %>% 
     summarise(cnt=n(), round(across(everything(), list(mean=mean)), 4))
   
   res_df = subset(res_df, select = -c(cnt_mean))
+  res_df['%_deviation'] <- round((res_df$y_pred_mean - res_df$q19_2_mean) / res_df$q19_2_mean * 100, 1)
   
   return(res_df)
 }
@@ -358,11 +357,11 @@ calculate_diagnostics <- function(filename){
 #  run_model(df, iter=iter, chains=chain, "Acura", "q19_2")
 #}
 
-#run_model(df, make="Acura", iter=5000, chains=12,"q19_2", save_fit=TRUE)
-# calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
+run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
+#calculate_diagnostics("./models/fit_Acura_M8_v2_5000_12.rds")
 
 # Example Compute Probability
-#M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_v2_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
+#M8_v2_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_v2_10000_12.rds", problem_area = "q19_2", coef_mode="mode")
 # 
 # View resulting table
-#view(M8_res_df)
+#view(M8_v2_res_df)
