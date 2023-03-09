@@ -2,7 +2,7 @@
 model_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8_v2 - Hierarchical Bayesian logistic probability model with Age and Miles"
 setwd(model_directory)
 
-source("bayes_hier_LP_M8_ver2.R")
+source("bayes_hier_LP_M8_v2.R")
 
 # Import necessary packages
 library(bayestestR)
@@ -134,7 +134,7 @@ plot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chain
     beta2_df <- rbind(beta2_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), beta2=extract(loaded_fit)$Beta[,j,i,2]))
   }
   
-  size = 1.5
+  size = 0.5
   axis_theme = theme(axis.title.x = element_text(size = 24), axis.text.x = element_text(size = 16))
   
   # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training

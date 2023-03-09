@@ -236,7 +236,7 @@ generated quantities {
   }
 }
 ", 
-  "hier_LG_M8.stan")
+  "hier_LG_M8_v2.stan")
 
 ## set Stan options for parallel computing
 options(mc.cores = parallel::detectCores())
@@ -268,7 +268,7 @@ run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE
   stan_data = stan_data_func(temp_df, years, problem_area)
   
   fit <- stan(
-    file = "hier_LG_M8.stan",
+    file = "hier_LG_M8_v2.stan",
     data = stan_data,
     iter = iter,
     warmup = 1000,
@@ -353,10 +353,10 @@ calculate_diagnostics <- function(filename){
 }
 
 # # Example Train
-# for (iter in c(5000, 10000, 20000)) {
-#   for (chain in c(4, 8, 12))
-#   run_model(df, iter=iter, chains=chain, "Mercedes-Benz", "q19_2")
-# }
+#for (iter in c(20000)) {
+#  for (chain in c(12))
+#  run_model(df, iter=iter, chains=chain, "Acura", "q19_2")
+#}
 
 #run_model(df, make="Acura", iter=5000, chains=12,"q19_2", save_fit=TRUE)
 # calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
