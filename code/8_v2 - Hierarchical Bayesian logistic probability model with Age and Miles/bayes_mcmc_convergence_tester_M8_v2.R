@@ -77,8 +77,8 @@ conv_test = function(fit_model_name, problem_area, show_params=FALSE, plot_chain
   return(loaded_fit)
 }
 
-plot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chains=NULL, downsampled=TRUE) {
-  # Plot posterior distributions of parameters for Stanfit objects
+multiplot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chains=NULL, downsampled=TRUE) {
+  # Plot posterior distributions of parameters for Stanfit objects for comparison
   # Parameter 1: path where Stanfit objects are located
   # Parameter 2: Name of the Make
   # Parameter 3: index of MMT
@@ -98,11 +98,11 @@ plot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chain
   }
     
   if (!is.null(iter)) {
-    rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][4] %in% iter) m)
+    rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][5] %in% iter) m)
   }
   
   if (!is.null(chains)) {
-    rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][5] %in% chains) m)
+    rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][6] %in% chains) m)
   }
   
   # Parameters of interests: mu, kappa, rho, beta_0, beta_1, beta_2
@@ -138,7 +138,7 @@ plot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chain
   axis_theme = theme(axis.title.x = element_text(size = 24), axis.text.x = element_text(size = 16))
   
   # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training
-  mu1 <- ggplot(mu1_df, aes(x=mu1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
+  mu1 <- ggplot(mu1_df, aes(x=mu1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme 
   mu2 <- ggplot(mu2_df, aes(x=mu2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
   kappa1 <- ggplot(kappa1_df, aes(x=kappa1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
   kappa2 <- ggplot(kappa2_df, aes(x=kappa2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
@@ -147,9 +147,53 @@ plot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chain
   beta0 <- ggplot(beta0_df, aes(x=beta0, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
   beta1 <- ggplot(beta1_df, aes(x=beta1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
   beta2 <- ggplot(beta2_df, aes(x=beta2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme
-  figure <- ggarrange(mu1, mu2, kappa1, kappa2, rho1, rho2, beta0, beta1, beta2, ncol=3, nrow=3, common.legend=TRUE) 
+  figure <- ggarrange(mu1, mu2, beta1, beta2, ncol=2, nrow=2, common.legend=TRUE) 
+  annotate_figure(figure, fig.lab.size=16)
+}
+
+plot_posterior = function(model_path="models/", model_name, i, j) {
+  # Plot posterior distributions of parameters for Stanfit objects
+  # Parameter 1: path where Stanfit objects are located
+  # Parameter 2: RDS file name
+  # Parameter 3: index of MMT
+  # Parameter 4: index of MY
+  
+  # Parameters of interests: mu, kappa, rho, beta_0, beta_1, beta_2
+  mu1_df = data.frame()
+  mu2_df = data.frame()
+  beta1_df <- data.frame()
+  beta2_df <- data.frame()
+
+  loaded_fit <- readRDS(paste("models/", model_name, sep=""))
+  iter_num = str_split(model_name, "_|\\.")[[1]][5]
+  chains_num = str_split(model_name, "_|\\.")[[1]][6]
+  ds_num = str_split(model_name, "_|\\.")[[1]][8]
+  
+  # Save parameter name as well as iterations & chains information 
+  mu1_df <- rbind(mu1_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), mu1=extract(loaded_fit)$mu[,1]))
+  mu2_df <- rbind(mu2_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), mu2=extract(loaded_fit)$mu[,2]))
+  beta1_df <- rbind(beta1_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), beta1=extract(loaded_fit)$Beta[,j,i,1]))
+  beta2_df <- rbind(beta2_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), beta2=extract(loaded_fit)$Beta[,j,i,2]))
+  mu1_mode <- max_density_func(mu1_df$mu1)
+  mu2_mode <- max_density_func(mu2_df$mu2)
+  beta1_mode <- max_density_func(beta1_df$beta1)
+  beta2_mode <- max_density_func(beta2_df$beta2)
+  
+  size = 1
+  axis_theme = theme(axis.title.x = element_text(size = 32), axis.text.x = element_text(size = 24))
+  
+  # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training
+  mu1 <- ggplot(mu1_df, aes(x=mu1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+    geom_vline(xintercept=mu1_mode, size=1.5, color="red") + geom_text(aes(x=mu1_mode, label=paste("Mode:", round(mu1_mode, 3)), y=0.5, vjust=0.8, hjust=-0.2), colour='black', size=11)
+  mu2 <- ggplot(mu2_df, aes(x=mu2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+    geom_vline(xintercept=mu2_mode, size=1.5, color="red") + geom_text(aes(x=mu2_mode, label=paste("Mode:", round(mu2_mode, 3)), y=0.5, vjust=0.8, hjust=-0.2), colour='black', size=11)
+  beta1 <- ggplot(beta1_df, aes(x=beta1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+    geom_vline(xintercept=beta1_mode, size=1.5, color="red") + geom_text(aes(x=beta1_mode, label=paste("Mode:", round(beta1_mode, 3)), y=0.3, vjust=0.8, hjust=-0.2), colour='black', size=11)
+  beta2 <- ggplot(beta2_df, aes(x=beta2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+    geom_vline(xintercept=beta2_mode, size=1.5, color="red") + geom_text(aes(x=beta2_mode, label=paste("Mode:", round(beta2_mode, 3)), y=0.3, vjust=0.8, hjust=-0.2), colour='black', size=11)
+  figure <- ggarrange(mu1, mu2, beta1, beta2, ncol=2, nrow=2, common.legend=TRUE) 
   annotate_figure(figure, fig.lab.size=16)
 }
 
 #conv_test("models/fit_Acura_M8_v2_5000_12.rds", "q19_2")
-plot_posterior("models/","Acura",1,1,iter=NULL,chains=NULL,downsampled=FALSE)
+#plot_posterior("models/","fit_Acura_M8_v2_5000_12.rds", 1, 1)

@@ -63,7 +63,7 @@ stan_data_func = function(df, years, problem_area){ # adding variable to allow f
   
   N_MY = df %>%
     group_by(MMT, MY) %>%
-    summarise(count = n())
+    summarize(count = n())
   
   # Add dummy column to avoid bug in complete() 
   N_MY = cbind(0, N_MY) 
@@ -322,10 +322,11 @@ pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode",
   # Compute mean cell probability & predicted probability 
   res_df = temp_df %>%
     group_by(MakeName, MMT, MY) %>% 
-    summarise(cnt=n(), round(across(everything(), list(mean=mean)), 4))
+    dplyr::summarize(cnt=n(), across(everything(), list(mean=mean)))
   
   res_df = subset(res_df, select = -c(cnt_mean))
   res_df['%_deviation'] <- round((res_df$y_pred_mean - res_df$q19_2_mean) / res_df$q19_2_mean * 100, 1)
+  res_df[c('q19_2_mean','y_pred_mean')] = round(res_df[c('q19_2_mean','y_pred_mean')], 4)
   
   return(res_df)
 }
@@ -357,11 +358,11 @@ calculate_diagnostics <- function(filename){
 #  run_model(df, iter=iter, chains=chain, "Acura", "q19_2")
 #}
 
-run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
+#run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
 #calculate_diagnostics("./models/fit_Acura_M8_v2_5000_12.rds")
 
 # Example Compute Probability
-#M8_v2_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_v2_10000_12.rds", problem_area = "q19_2", coef_mode="mode")
+M8_v2_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_v2_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
 # 
 # View resulting table
-#view(M8_v2_res_df)
+view(M8_v2_res_df)
