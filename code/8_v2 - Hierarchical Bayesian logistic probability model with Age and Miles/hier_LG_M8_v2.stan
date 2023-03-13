@@ -1,25 +1,25 @@
 //Bernoulli hierarchical model
 data {
-  int <lower=0> N;                                                //number of sample size per MMT
-  int <lower=0> n_years;                                          //number of unique MY
-  int <lower=0> n_mmt;                                            //number of unique MMT per MakeName
+  int <lower=0> N;                             //number of sample size per MMT
+  int <lower=0> n_years;                       //number of unique MY
+  int <lower=0> n_mmt;                         //number of unique MMT per MakeName
   int <lower=0> N_MY[n_years, n_mmt];          //number of observations per MY
-  int <lower=0, upper=1> y[N];                                    //outcome
-  real <lower=0, upper=1> age[N];                                           //age
-  real <lower=0, upper=1> miles[N];                                         //Mileage
+  int <lower=0, upper=1> y[N];                 //outcome
+  real <lower=0, upper=1> age[N];              //age
+  real <lower=0, upper=1> miles[N];            //Mileage
 }
 
 parameters {
   real <lower=0> kappa[2];                      //std for all levels of hierarchy
-  real mu[2];                                   //Make-level mean parameter for normal priors
-  real rho[2, n_mmt];                           //MMT-level mean parameter for normal priors
-  real alpha[2, n_mmt, n_years];                //My-level mean parameter for normal priors
-  real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
-  real Beta[n_years, n_mmt, 2];      //Coefficients for Age and Mileage at Make-MMT-MY level
+  real mu[2];                                   //Make-level mean parameters for normal priors
+  real rho[2, n_mmt];                           //MMT-level mean parameters for normal priors
+  real alpha[2, n_mmt, n_years];                //My-level mean parameters for normal priors
+  real Beta_0[n_years, n_mmt];                  //Intercept for the logistic regression at Make-MMT-MY level
+  real Beta[n_years, n_mmt, 2];                 //Coefficients for Age and Mileage at Make-MMT-MY level
 }
 
 model {
-  int n = 0;                                                                                //** The int n initialization was moved to the first line. 
+  int n = 0;                                    //** The int n initialization was moved to the first line. 
   kappa[1] ~ gamma(1, 1);
   kappa[2] ~ gamma(1, 1);
   mu[1] ~ normal(0, 1);

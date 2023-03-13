@@ -51,10 +51,12 @@ data_filter_func = function(df, make, problem_area){ # adding variable to allow 
 }
 
 stan_data_func = function(df, years, problem_area){ # adding variable to allow for choice of problem area - NM 02/28/23
-  ## create stan data
-  #### observations, their length, and a matrix that counts the number of
-  #### observations per MMT:MY. For incomplete MMT, the matrix is
-  #### filled with zeros
+  ## create stan data observations, their length, and a matrix that counts the number of
+  ## observations per MMT:MY. For incomplete MMT, the matrix is filled with zeros
+  # df: Original DataFrame
+  # years: length of distinct years 
+  # problem_area: Problem area of interest
+  
   y = df[[problem_area]]
   age = df$Age_scaled  # assign scaled ages
   miles = df$Miles_scaled  # assign scaled mileages 
@@ -164,26 +166,26 @@ predict_func <- function(stan_data, coef, df){
 write(
   "//Bernoulli hierarchical model
 data {
-  int <lower=0> N;                                                //number of sample size per MMT
-  int <lower=0> n_years;                                          //number of unique MY
-  int <lower=0> n_mmt;                                            //number of unique MMT per MakeName
+  int <lower=0> N;                             //number of sample size per MMT
+  int <lower=0> n_years;                       //number of unique MY
+  int <lower=0> n_mmt;                         //number of unique MMT per MakeName
   int <lower=0> N_MY[n_years, n_mmt];          //number of observations per MY
-  int <lower=0, upper=1> y[N];                                    //outcome
-  real <lower=0, upper=1> age[N];                                           //age
-  real <lower=0, upper=1> miles[N];                                         //Mileage
+  int <lower=0, upper=1> y[N];                 //outcome
+  real <lower=0, upper=1> age[N];              //age
+  real <lower=0, upper=1> miles[N];            //Mileage
 }
 
 parameters {
   real <lower=0> kappa[2];                      //std for all levels of hierarchy
-  real mu[2];                                   //Make-level mean parameter for normal priors
-  real rho[2, n_mmt];                           //MMT-level mean parameter for normal priors
-  real alpha[2, n_mmt, n_years];                //My-level mean parameter for normal priors
-  real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
-  real Beta[n_years, n_mmt, 2];      //Coefficients for Age and Mileage at Make-MMT-MY level
+  real mu[2];                                   //Make-level mean parameters for normal priors
+  real rho[2, n_mmt];                           //MMT-level mean parameters for normal priors
+  real alpha[2, n_mmt, n_years];                //My-level mean parameters for normal priors
+  real Beta_0[n_years, n_mmt];                  //Intercept for the logistic regression at Make-MMT-MY level
+  real Beta[n_years, n_mmt, 2];                 //Coefficients for Age and Mileage at Make-MMT-MY level
 }
 
 model {
-  int n = 0;                                                                                //** The int n initialization was moved to the first line. 
+  int n = 0;                                    //** The int n initialization was moved to the first line. 
   kappa[1] ~ gamma(1, 1);
   kappa[2] ~ gamma(1, 1);
   mu[1] ~ normal(0, 1);
@@ -246,9 +248,9 @@ rstan_options(auto_write = TRUE)
 
 run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE) { # adding variable to allow for choice of problem area - NM 02/28/23
   # df: Original DataFrame
+  # make: Make of interest
   # iter: # of iterations to run MCMC
   # chains: # of MCMC chains
-  # make_list: List of makes 
   # problem_area: Specific problem area
   # save_fit: whether to save the stanfit object
   
@@ -293,10 +295,10 @@ run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE
 
 pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode","mean")) {
   ## Compute naive and predicted probabilities by MMT-MY
-  # Parameter 1: Original Dataframe
-  # Parameter 2: Trained Stanfit model file - .rds file 
-  # Parameter 3: Problem area of interest
-  # Parameter 4: Coefficient selection method. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
+  # df: Original Dataframe
+  # fit_model_name: Trained Stanfit model file - .rds file 
+  # problem_area: Problem area of interest
+  # coef_mode: Coefficient selection method. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
   
   # Extract Make Name from fit model
   make = str_split(fit_model_name, "_")[[1]][2]
@@ -334,7 +336,7 @@ pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode",
 
 calculate_diagnostics <- function(filename){
   # Function to calculate diagnostics for model comparison
-  # parameter 1: Trained Stanfit model file - .rds file
+  # filename: Trained Stanfit model file - .rds file
   
   # load in the model
   fit <- readRDS(filename)

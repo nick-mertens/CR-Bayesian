@@ -89,22 +89,22 @@ multiplot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, 
   
   # Collect all Stanfit objects of the input Make
   rds_list = list.files("models/")
-  sample_sizes = c("100", "300", "500")
   
   # Whether to look at downsampled models 
-  # if (downsampled) {
-  #   rds_list = to_list(for (m in rds_list) if (grepl(MakeName, m, fixed=TRUE) & (grepl("_ds_", m, fixed=TRUE))) m)
-  # } else {
-  #   rds_list = to_list(for (m in rds_list) if (grepl(MakeName, m, fixed=TRUE) & !(grepl("_ds_", m, fixed=TRUE))) m)
-  # }
+  if (downsampled) {
+    rds_list = to_list(for (m in rds_list) if (grepl(MakeName, m, fixed=TRUE) & (grepl("_ds_", m, fixed=TRUE))) m)
+  } else {
+    rds_list = to_list(for (m in rds_list) if (grepl(MakeName, m, fixed=TRUE) & !(grepl("_ds_", m, fixed=TRUE))) m)
+  }
   
   rds_list = to_list(for (m in rds_list) if (grepl(MakeName, m, fixed=TRUE)) m)
-  rds_list = to_list(for (m in rds_list) if (!(str_split(m, "_|\\.")[[1]][9]) %in% sample_sizes) m)  
   
+  # if # of iterations is specified
   if (!is.null(iter)) {
     rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][5] %in% iter) m)
   }
   
+  # if # of chains is specified
   if (!is.null(chains)) {
     rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][6] %in% chains) m)
   }
@@ -126,17 +126,17 @@ multiplot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, 
     chains_num = str_split(r, "_|\\.")[[1]][6]
     ds_num = str_split(r, "_|\\.")[[1]][9]
     
-    legend = sub('_NA', '_fs', paste(iter_num,"_",chains_num,"_",ds_num,sep=""))
+    #legend = sub('_NA', '_fs', paste(iter_num,"_",chains_num,"_",ds_num,sep=""))
     legend_ds = sub('NA', 'Full', paste(ds_num, "samples"))
     
     # Save parameter name as well as iterations & chains information 
     mu1_df <- rbind(mu1_df, data.frame(iter_chains=legend_ds, mu1=extract(loaded_fit)$mu[,1]))
     mu2_df <- rbind(mu2_df, data.frame(iter_chains=legend_ds, mu2=extract(loaded_fit)$mu[,2]))
-    # kappa1_df <- rbind(kappa1_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), kappa1=extract(loaded_fit)$kappa[,1]))
-    # kappa2_df <- rbind(kappa2_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), kappa2=extract(loaded_fit)$kappa[,2]))
-    # rho1_df <- rbind(rho1_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), rho1=extract(loaded_fit)$rho[,1,i]))
-    # rho2_df <- rbind(rho2_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), rho2=extract(loaded_fit)$rho[,2,i]))
-    # beta0_df <- rbind(beta0_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), beta0=extract(loaded_fit)$Beta_0[,j,i]))
+    # kappa1_df <- rbind(kappa1_df, data.frame(iter_chains=legend_ds, kappa1=extract(loaded_fit)$kappa[,1]))
+    # kappa2_df <- rbind(kappa2_df, data.frame(iter_chains=legend_ds, kappa2=extract(loaded_fit)$kappa[,2]))
+    # rho1_df <- rbind(rho1_df, data.frame(iter_chains=legend_ds, rho1=extract(loaded_fit)$rho[,1,i]))
+    # rho2_df <- rbind(rho2_df, data.frame(iter_chains=legend_ds, rho2=extract(loaded_fit)$rho[,2,i]))
+    # beta0_df <- rbind(beta0_df, data.frame(iter_chains=legend_ds, beta0=extract(loaded_fit)$Beta_0[,j,i]))
     beta1_df <- rbind(beta1_df, data.frame(iter_chains=legend_ds, beta1=extract(loaded_fit)$Beta[,j,i,1]))
     beta2_df <- rbind(beta2_df, data.frame(iter_chains=legend_ds, beta2=extract(loaded_fit)$Beta[,j,i,2]))
   }
