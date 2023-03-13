@@ -266,6 +266,8 @@ run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE
   temp_df = data_filter_func(df, make, problem_area)
   stan_data = stan_data_func(temp_df, years, problem_area)
   
+  print(paste("Starting MCMC training for", make, "with", iter, "iterations with", chains, "chains"))
+  
   fit <- stan(
     file = "hier_LG_M8_v2.stan",
     data = stan_data,
@@ -292,10 +294,9 @@ run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE
 pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode","mean")) {
   ## Compute naive and predicted probabilities by MMT-MY
   # Parameter 1: Original Dataframe
-  # Parameter 2: Trained Stanfit model name - Specify file paths 
-  # Parameter 3: Trained Stanfit model file - .rds file (Need either one of model name or model rds file)
-  # Parameter 4: Problem area of interest
-  # Parameter 5: Coefficient selection method. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
+  # Parameter 2: Trained Stanfit model file - .rds file 
+  # Parameter 3: Problem area of interest
+  # Parameter 4: Coefficient selection method. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
   
   # Extract Make Name from fit model
   make = str_split(fit_model_name, "_")[[1]][2]
@@ -331,8 +332,9 @@ pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode",
   return(res_df)
 }
 
-# Function to calculate diagnostics for model comparison
 calculate_diagnostics <- function(filename){
+  # Function to calculate diagnostics for model comparison
+  # parameter 1: Trained Stanfit model file - .rds file
   
   # load in the model
   fit <- readRDS(filename)
@@ -352,17 +354,19 @@ calculate_diagnostics <- function(filename){
   print(loo(fit_log, r_eff = fit_eff))
 }
 
-# # Example Train
+## Example Train
 #for (iter in c(20000)) {
 #  for (chain in c(12))
 #  run_model(df, iter=iter, chains=chain, "Acura", "q19_2")
 #}
 
+
 #run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
+# Example Calculate Diagnostics
 #calculate_diagnostics("./models/fit_Acura_M8_v2_5000_12.rds")
 
 # Example Compute Probability
-M8_v2_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_v2_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
-# 
+#M8_v2_res_df = pred_prob(df, fit_model_name="models/fit_Nissan_M8_v2_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
+
 # View resulting table
-view(M8_v2_res_df)
+#view(M8_v2_res_df)

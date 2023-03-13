@@ -359,7 +359,7 @@ calculate_diagnostics <- function(filename){
 # calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
 
 # Example Compute Probability
-M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
+#M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
 # 
 # View resulting table
-view(M8_res_df)
+#view(M8_res_df)
