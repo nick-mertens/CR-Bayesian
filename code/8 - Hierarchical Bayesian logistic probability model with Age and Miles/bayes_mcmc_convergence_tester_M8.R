@@ -77,14 +77,33 @@ conv_test = function(fit_model_name, show_params=FALSE, plot_chains=FALSE) {
   return(loaded_fit)
 }
 
-plot_posterior = function(model_path="models/", MakeName) {
-  # Plot posterior distributions of parameters for Stanfit objects
+multiplot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chains=NULL, downsampled=TRUE) {
+  # Plot posterior distributions of parameters for Stanfit objects for comparison
   # Parameter 1: path where Stanfit objects are located
   # Parameter 2: Name of the Make
+  # Parameter 3: index of MMT
+  # Parameter 4: index of MY
+  # Parameter 5: Filter models by number of iterations (List)
+  # Parameter 6: Filter models by number of chains (List)
+  # Parameter 7: Whether models are downsampled
   
   # Collect all Stanfit objects of the input Make
   rds_list = list.files("models/")
-  rds_list = to_list(for (m in rds_list) if (grepl(MakeName, m, fixed=TRUE)) m)
+  
+  # Whether to look at downsampled models 
+  if (downsampled) {
+    rds_list = to_list(for (m in rds_list) if (grepl(MakeName, m, fixed=TRUE) & (grepl("_ds_", m, fixed=TRUE))) m)
+  } else {
+    rds_list = to_list(for (m in rds_list) if (grepl(MakeName, m, fixed=TRUE) & !(grepl("_ds_", m, fixed=TRUE))) m)
+  }
+    
+  if (!is.null(iter)) {
+    rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][4] %in% iter) m)
+  }
+  
+  if (!is.null(chains)) {
+    rds_list = to_list(for (m in rds_list) if (str_split(m, "_|\\.")[[1]][5] %in% chains) m)
+  }
   
   # Parameters of interests: mu, kappa, rho, beta_0, beta_1, beta_2
   mu_df = data.frame()
@@ -95,17 +114,18 @@ plot_posterior = function(model_path="models/", MakeName) {
   beta2_df <- data.frame()
   
   for (r in rds_list) {
-    loaded_fit = conv_test(paste("models/", r, sep=""), show_params=TRUE, plot_chains=TRUE)
-    iter = str_split(r, "_|\\.")[[1]][4]
-    chains = str_split(r, "_|\\.")[[1]][5]
+    loaded_fit <- readRDS(paste("models/", r, sep=""))
+    iter_num = str_split(r, "_|\\.")[[1]][4]
+    chains_num = str_split(r, "_|\\.")[[1]][5]
+    ds_num = str_split(r, "_|\\.")[[1]][8]
     
     # Save parameter name as well as iterations & chains information 
-    mu_df <- rbind(mu_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), mu=as.data.frame(loaded_fit)$mu))
-    kappa_df <- rbind(kappa_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), kappa=as.data.frame(loaded_fit)$kappa))
-    rho_df <- rbind(rho_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), rho=extract(loaded_fit)$rho[,1]))
-    beta0_df <- rbind(beta0_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta0=extract(loaded_fit)$Beta_0[,1,1]))
-    beta1_df <- rbind(beta1_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta1=extract(loaded_fit)$Beta_1[,1,1]))
-    beta2_df <- rbind(beta2_df, data.frame(iter_chains=paste(iter,"_",chains,sep=""), beta2=extract(loaded_fit)$Beta_2[,1,1]))
+    mu_df <- rbind(mu_df, data.frame(iter_chains=sub('NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), mu=as.data.frame(loaded_fit)$mu))
+    kappa_df <- rbind(kappa_df, data.frame(iter_chains=sub('NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), kappa=as.data.frame(loaded_fit)$kappa))
+    rho_df <- rbind(rho_df, data.frame(iter_chains=sub('NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), rho=extract(loaded_fit)$rho[,1]))
+    beta0_df <- rbind(beta0_df, data.frame(iter_chains=sub('NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), beta0=extract(loaded_fit)$Beta_0[,j,i]))
+    beta1_df <- rbind(beta1_df, data.frame(iter_chains=sub('NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), beta1=extract(loaded_fit)$Beta[,j,i,1]))
+    beta2_df <- rbind(beta2_df, data.frame(iter_chains=sub('NA', '', paste(iter_num,"_",chains_num,"_",ds_num,sep="")), beta2=extract(loaded_fit)$Beta[,j,i,2]))
   }
   
   # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training
@@ -118,4 +138,36 @@ plot_posterior = function(model_path="models/", MakeName) {
   ggarrange(mu, kappa, rho, beta0, beta1, beta2, ncol=3, nrow=2, common.legend=TRUE)
 }
 
-plot_posterior("models/","Acura")
+plot_posterior = function(model_path="models/", model_name, i, j) {
+  # Plot posterior distribution of specified Stanfit objects
+  # Parameter 1: path where Stanfit objects are located
+  # Parameter 2: RDS file name
+  # Parameter 3: index of MMT
+  # Parameter 4: index of MY
+  
+  # Parameters of interests: beta_1, beta_2
+  beta1_df <- data.frame()
+  beta2_df <- data.frame()
+  
+  loaded_fit <- readRDS(paste("models/", model_name, sep=""))
+  iter_num = str_split(model_name, "_|\\.")[[1]][4]
+  chains_num = str_split(model_name, "_|\\.")[[1]][5]
+  beta1_df <- rbind(beta1_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,sep="")), beta1=extract(loaded_fit)$Beta[,j,i,1]))
+  beta2_df <- rbind(beta2_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,sep="")), beta2=extract(loaded_fit)$Beta[,j,i,2]))
+  # Save parameter name as well as iterations & chains information 
+  beta1_mode <- max_density_func(beta1_df$beta1)
+  beta2_mode <- max_density_func(beta2_df$beta2)
+  
+  size = 1
+  axis_theme = theme(axis.title.x = element_text(size = 40), axis.text.x = element_text(size = 28))
+  # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training
+  beta1 <- ggplot(beta1_df, aes(x=beta1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+    geom_vline(xintercept=beta1_mode, size=1.5, color="red") + geom_text(aes(x=beta1_mode, label=paste("Mode:", round(beta1_mode, 3)), y=0.3, vjust=0.8, hjust=-0.2), colour='black', size=14)
+  beta2 <- ggplot(beta2_df, aes(x=beta2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+    geom_vline(xintercept=beta2_mode, size=1.5, color="red") + geom_text(aes(x=beta2_mode, label=paste("Mode:", round(beta2_mode, 3)), y=0.3, vjust=0.8, hjust=-0.2), colour='black', size=14)
+  figure <- ggarrange(beta1, beta2, ncol=2, nrow=1, common.legend=TRUE) 
+  annotate_figure(figure, fig.lab.size=16)
+}
+
+#plot_posterior("models/","fit_Acura_M8_5000_12.rds", 1, 1)
+
