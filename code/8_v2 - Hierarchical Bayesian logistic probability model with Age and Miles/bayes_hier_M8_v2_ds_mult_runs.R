@@ -23,16 +23,14 @@ complete_res_df = data.frame()
 # break up the data to sample from Nissan Rogue group
 nissan_rogue_df = df[df$MMT == "Nissan Rogue", ]
 
-sample_list = c(300)
-# sample_list = c(300, 200, 100)
-#sample_list = c(600, 500, 400, 300, 200, 100)
-
 make = "Nissan"
 iter = 5000
 chains = 12
+sample_num = 300
+runs = 5
 
 # run the for loop
-for(sample_num in sample_list){
+for(run in 1:runs){
   # break up training data to remove the nissan rogue rows
   training_df = df[df$MMT != "Nissan Rogue", ]
   
@@ -53,11 +51,13 @@ for(sample_num in sample_list){
                      problem_area = "q19_2", 
                      coef_mode="mode")
   
+  write.csv(res_df, paste("./downsample_results/", make, "_downsampling_", sample_num, "M8_v2_run", run, ".csv", sep = ""))
+  
   # filter predictions to get only nissan rogue
   nissan_res_df = res_df[res_df$MMT == "Nissan Rogue", ]
   
   # append a column to record sample size
-  nissan_res_df = cbind(nissan_res_df, sample_num = sample_num)
+  nissan_res_df = cbind(nissan_res_df, sample_num = sample_num, run = run)
   
   # append the result to the res_df
   complete_res_df <- rbind(complete_res_df, nissan_res_df)
@@ -66,6 +66,6 @@ for(sample_num in sample_list){
 # check the file
 view(complete_res_df)
 
-# write file to csv
-write.csv(complete_res_df, "nissan_rogue_downsampling_M8_v2.csv")
+# save final file
+write.csv(complete_res_df, paste("./downsample_results/", make, "_downsampling_", sample_num, "_M8_v2_allruns.csv", sep = ""))
 

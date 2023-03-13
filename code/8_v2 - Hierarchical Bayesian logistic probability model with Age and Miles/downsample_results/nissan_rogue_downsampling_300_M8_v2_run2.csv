@@ -1,0 +1,36 @@
+"","MakeName","MMT","MY","cnt","q19_2_mean","y_pred_mean","%_deviation"
+"1","Nissan","Nissan Altima","2018",62,0,0.0029,Inf
+"2","Nissan","Nissan Altima","2019",111,0.018,0.012,-33.6
+"3","Nissan","Nissan Altima","2020",61,0,0.0012,Inf
+"4","Nissan","Nissan Armada","2018",22,0,0.0101,Inf
+"5","Nissan","Nissan Armada","2019",24,0,0.0046,Inf
+"6","Nissan","Nissan Armada","2020",2,0,0.0067,Inf
+"7","Nissan","Nissan Frontier","2018",95,0.0105,0.0068,-35.7
+"8","Nissan","Nissan Frontier","2019",116,0,9e-04,Inf
+"9","Nissan","Nissan Frontier","2020",1,0,0.0204,Inf
+"10","Nissan","Nissan Kicks","2018",26,0.0385,0.0428,11.2
+"11","Nissan","Nissan Kicks","2019",35,0,0.003,Inf
+"12","Nissan","Nissan Kicks","2020",9,0,0.0087,Inf
+"13","Nissan","Nissan Leaf","2018",94,0.0106,0.0137,28.4
+"14","Nissan","Nissan Leaf","2019",102,0.0098,0.0137,39.5
+"15","Nissan","Nissan Leaf","2020",14,0,0.0035,Inf
+"16","Nissan","Nissan Maxima","2018",38,0,0.0026,Inf
+"17","Nissan","Nissan Maxima","2019",24,0.0417,0.0407,-2.4
+"18","Nissan","Nissan Maxima","2020",10,0,0.006,Inf
+"19","Nissan","Nissan Murano","2018",218,0.0046,0.0043,-5.3
+"20","Nissan","Nissan Murano","2019",156,0,0.001,Inf
+"21","Nissan","Nissan Murano","2020",68,0,0.0011,Inf
+"22","Nissan","Nissan Pathfinder","2018",54,0.037,0.0403,8.9
+"23","Nissan","Nissan Pathfinder","2019",30,0.0333,0.0376,12.8
+"24","Nissan","Nissan Pathfinder","2020",11,0,0.0074,Inf
+"25","Nissan","Nissan Rogue","2018",146,0.0068,0.0077,13.1
+"26","Nissan","Nissan Rogue","2019",114,0,0.004,Inf
+"27","Nissan","Nissan Rogue","2020",40,0,0.0022,Inf
+"28","Nissan","Nissan Rogue Sport","2018",72,0.0278,0.0093,-66.6
+"29","Nissan","Nissan Rogue Sport","2019",71,0,0.0072,Inf
+"30","Nissan","Nissan Rogue Sport","2020",24,0,0.0021,Inf
+"31","Nissan","Nissan Sentra","2018",36,0,0.0017,Inf
+"32","Nissan","Nissan Sentra","2019",41,0,0.0015,Inf
+"33","Nissan","Nissan Sentra","2020",13,0,0.0019,Inf
+"34","Nissan","Nissan Titan","2018",33,0,0.0022,Inf
+"35","Nissan","Nissan Titan","2019",19,0,0.0028,Inf

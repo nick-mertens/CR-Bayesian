@@ -1,0 +1,36 @@
+"","MakeName","MMT","MY","cnt","q19_2_mean","y_pred_mean","%_deviation"
+"1","Nissan","Nissan Altima","2018",62,0,0.0026,Inf
+"2","Nissan","Nissan Altima","2019",111,0.018,0.0181,0.6
+"3","Nissan","Nissan Altima","2020",61,0,0.0015,Inf
+"4","Nissan","Nissan Armada","2018",22,0,0.0059,Inf
+"5","Nissan","Nissan Armada","2019",24,0,0.0023,Inf
+"6","Nissan","Nissan Armada","2020",2,0,0.0059,Inf
+"7","Nissan","Nissan Frontier","2018",95,0.0105,0.0077,-26.9
+"8","Nissan","Nissan Frontier","2019",116,0,8e-04,Inf
+"9","Nissan","Nissan Frontier","2020",1,0,0.0172,Inf
+"10","Nissan","Nissan Kicks","2018",26,0.0385,0.0375,-2.5
+"11","Nissan","Nissan Kicks","2019",35,0,0.0013,Inf
+"12","Nissan","Nissan Kicks","2020",9,0,0.0135,Inf
+"13","Nissan","Nissan Leaf","2018",94,0.0106,0.0066,-37.6
+"14","Nissan","Nissan Leaf","2019",102,0.0098,0.0104,6.5
+"15","Nissan","Nissan Leaf","2020",14,0,0.0035,Inf
+"16","Nissan","Nissan Maxima","2018",38,0,0.002,Inf
+"17","Nissan","Nissan Maxima","2019",24,0.0417,0.0427,2.4
+"18","Nissan","Nissan Maxima","2020",10,0,0.0034,Inf
+"19","Nissan","Nissan Murano","2018",218,0.0046,0.0044,-4.4
+"20","Nissan","Nissan Murano","2019",156,0,3e-04,Inf
+"21","Nissan","Nissan Murano","2020",68,0,0.0011,Inf
+"22","Nissan","Nissan Pathfinder","2018",54,0.037,0.0356,-3.9
+"23","Nissan","Nissan Pathfinder","2019",30,0.0333,0.0296,-11.1
+"24","Nissan","Nissan Pathfinder","2020",11,0,0.0057,Inf
+"25","Nissan","Nissan Rogue","2018",136,0,0.0022,Inf
+"26","Nissan","Nissan Rogue","2019",115,0,0.0022,Inf
+"27","Nissan","Nissan Rogue","2020",49,0,0.0016,Inf
+"28","Nissan","Nissan Rogue Sport","2018",72,0.0278,0.012,-56.8
+"29","Nissan","Nissan Rogue Sport","2019",71,0,0.0082,Inf
+"30","Nissan","Nissan Rogue Sport","2020",24,0,0.0014,Inf
+"31","Nissan","Nissan Sentra","2018",36,0,0.0023,Inf
+"32","Nissan","Nissan Sentra","2019",41,0,0.002,Inf
+"33","Nissan","Nissan Sentra","2020",13,0,0.0021,Inf
+"34","Nissan","Nissan Titan","2018",33,0,0.0013,Inf
+"35","Nissan","Nissan Titan","2019",19,0,0.003,Inf

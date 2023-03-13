@@ -1,0 +1,36 @@
+"","MakeName","MMT","MY","cnt","q19_2_mean","y_pred_mean","%_deviation"
+"1","Nissan","Nissan Altima","2018",62,0,0.0084,Inf
+"2","Nissan","Nissan Altima","2019",111,0.018,0.0251,39.1
+"3","Nissan","Nissan Altima","2020",61,0,0.0057,Inf
+"4","Nissan","Nissan Armada","2018",22,0,0.0193,Inf
+"5","Nissan","Nissan Armada","2019",24,0,0.019,Inf
+"6","Nissan","Nissan Armada","2020",2,0,0.0286,Inf
+"7","Nissan","Nissan Frontier","2018",95,0.0105,0.013,23.9
+"8","Nissan","Nissan Frontier","2019",116,0,0.0061,Inf
+"9","Nissan","Nissan Frontier","2020",1,0,0.0226,Inf
+"10","Nissan","Nissan Kicks","2018",26,0.0385,0.041,6.5
+"11","Nissan","Nissan Kicks","2019",35,0,0.015,Inf
+"12","Nissan","Nissan Kicks","2020",9,0,0.0243,Inf
+"13","Nissan","Nissan Leaf","2018",94,0.0106,0.0087,-18.4
+"14","Nissan","Nissan Leaf","2019",102,0.0098,0.016,62.8
+"15","Nissan","Nissan Leaf","2020",14,0,0.018,Inf
+"16","Nissan","Nissan Maxima","2018",38,0,0.016,Inf
+"17","Nissan","Nissan Maxima","2019",24,0.0417,0.0413,-0.8
+"18","Nissan","Nissan Maxima","2020",10,0,0.0165,Inf
+"19","Nissan","Nissan Murano","2018",218,0.0046,0.0092,100.3
+"20","Nissan","Nissan Murano","2019",156,0,0.0049,Inf
+"21","Nissan","Nissan Murano","2020",68,0,0.0094,Inf
+"22","Nissan","Nissan Pathfinder","2018",54,0.037,0.044,18.9
+"23","Nissan","Nissan Pathfinder","2019",30,0.0333,0.0392,17.7
+"24","Nissan","Nissan Pathfinder","2020",11,0,0.019,Inf
+"25","Nissan","Nissan Rogue","2018",145,0.0138,0.0182,32.2
+"26","Nissan","Nissan Rogue","2019",111,0.009,0.0166,84.1
+"27","Nissan","Nissan Rogue","2020",44,0,0.0134,Inf
+"28","Nissan","Nissan Rogue Sport","2018",72,0.0278,0.0148,-46.8
+"29","Nissan","Nissan Rogue Sport","2019",71,0,0.013,Inf
+"30","Nissan","Nissan Rogue Sport","2020",24,0,0.0069,Inf
+"31","Nissan","Nissan Sentra","2018",36,0,0.0089,Inf
+"32","Nissan","Nissan Sentra","2019",41,0,0.0082,Inf
+"33","Nissan","Nissan Sentra","2020",13,0,0.0121,Inf
+"34","Nissan","Nissan Titan","2018",33,0,0.0128,Inf
+"35","Nissan","Nissan Titan","2019",19,0,0.0225,Inf
