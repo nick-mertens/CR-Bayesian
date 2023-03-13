@@ -30,7 +30,6 @@ library(loo)
 # Read original file into df
 df = read.csv("mixeddata052722.csv")
 
-
 # There are 3 unique years - 2018, 2019, 2020
 years = length(unique(df$MY))
 min_year = min(df$MY)
@@ -52,10 +51,12 @@ data_filter_func = function(df, make, problem_area){ # adding variable to allow 
 }
 
 stan_data_func = function(df, years, problem_area){ # adding variable to allow for choice of problem area - NM 02/28/23
-  ## create stan data
-  #### observations, their length, and a matrix that counts the number of
-  #### observations per MMT:MY. For incomplete MMT, the matrix is
-  #### filled with zeros
+  ## create stan data observations, their length, and a matrix that counts the number of
+  ## observations per MMT:MY. For incomplete MMT, the matrix is filled with zeros
+  # df: Original DataFrame
+  # years: length of distinct years 
+  # problem_area: Problem area of interest
+  
   y = df[[problem_area]]
   age = df$Age_scaled  # assign scaled ages
   miles = df$Miles_scaled  # assign scaled mileages 
@@ -64,7 +65,7 @@ stan_data_func = function(df, years, problem_area){ # adding variable to allow f
   
   N_MY = df %>%
     group_by(MMT, MY) %>%
-    summarise(count = n())
+    summarize(count = n())
   
   # Add dummy column to avoid bug in complete() 
   N_MY = cbind(0, N_MY) 
@@ -165,26 +166,26 @@ predict_func <- function(stan_data, coef, df){
 write(
   "//Bernoulli hierarchical model
 data {
-  int <lower=0> N;                                                //number of sample size per MMT
-  int <lower=0> n_years;                                          //number of unique MY
-  int <lower=0> n_mmt;                                            //number of unique MMT per MakeName
+  int <lower=0> N;                             //number of sample size per MMT
+  int <lower=0> n_years;                       //number of unique MY
+  int <lower=0> n_mmt;                         //number of unique MMT per MakeName
   int <lower=0> N_MY[n_years, n_mmt];          //number of observations per MY
-  int <lower=0, upper=1> y[N];                                    //outcome
-  real <lower=0, upper=1> age[N];                                           //age
-  real <lower=0, upper=1> miles[N];                                         //Mileage
+  int <lower=0, upper=1> y[N];                 //outcome
+  real <lower=0, upper=1> age[N];              //age
+  real <lower=0, upper=1> miles[N];            //Mileage
 }
 
 parameters {
   real <lower=0> kappa[2];                      //std for all levels of hierarchy
-  real mu[2];                                   //Make-level mean parameter for normal priors
-  real rho[2, n_mmt];                           //MMT-level mean parameter for normal priors
-  real alpha[2, n_mmt, n_years];                //My-level mean parameter for normal priors
-  real Beta_0[n_years, n_mmt];       //Intercept for the logistic regression at Make-MMT-MY level
-  real Beta[n_years, n_mmt, 2];      //Coefficients for Age and Mileage at Make-MMT-MY level
+  real mu[2];                                   //Make-level mean parameters for normal priors
+  real rho[2, n_mmt];                           //MMT-level mean parameters for normal priors
+  real alpha[2, n_mmt, n_years];                //My-level mean parameters for normal priors
+  real Beta_0[n_years, n_mmt];                  //Intercept for the logistic regression at Make-MMT-MY level
+  real Beta[n_years, n_mmt, 2];                 //Coefficients for Age and Mileage at Make-MMT-MY level
 }
 
 model {
-  int n = 0;                                                                                //** The int n initialization was moved to the first line. 
+  int n = 0;                                    //** The int n initialization was moved to the first line. 
   kappa[1] ~ gamma(1, 1);
   kappa[2] ~ gamma(1, 1);
   mu[1] ~ normal(0, 1);
@@ -236,7 +237,7 @@ generated quantities {
   }
 }
 ", 
-  "hier_LG_M8.stan")
+  "hier_LG_M8_v2.stan")
 
 ## set Stan options for parallel computing
 options(mc.cores = parallel::detectCores())
@@ -247,9 +248,9 @@ rstan_options(auto_write = TRUE)
 
 run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE) { # adding variable to allow for choice of problem area - NM 02/28/23
   # df: Original DataFrame
+  # make: Make of interest
   # iter: # of iterations to run MCMC
   # chains: # of MCMC chains
-  # make_list: List of makes 
   # problem_area: Specific problem area
   # save_fit: whether to save the stanfit object
   
@@ -267,8 +268,10 @@ run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE
   temp_df = data_filter_func(df, make, problem_area)
   stan_data = stan_data_func(temp_df, years, problem_area)
   
+  print(paste("Starting MCMC training for", make, "with", iter, "iterations with", chains, "chains"))
+  
   fit <- stan(
-    file = "hier_LG_M8.stan",
+    file = "hier_LG_M8_v2.stan",
     data = stan_data,
     iter = iter,
     warmup = 1000,
@@ -292,11 +295,10 @@ run_model <- function(df, make, iter=5000, chains=4, problem_area, save_fit=TRUE
 
 pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode","mean")) {
   ## Compute naive and predicted probabilities by MMT-MY
-  # Parameter 1: Original Dataframe
-  # Parameter 2: Trained Stanfit model name - Specify file paths 
-  # Parameter 3: Trained Stanfit model file - .rds file (Need either one of model name or model rds file)
-  # Parameter 4: Problem area of interest
-  # Parameter 5: Coefficient selection method. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
+  # df: Original Dataframe
+  # fit_model_name: Trained Stanfit model file - .rds file 
+  # problem_area: Problem area of interest
+  # coef_mode: Coefficient selection method. "Mode" finds the mode of the posterior distribution. "Mean" finds the mean of the distribution.
   
   # Extract Make Name from fit model
   make = str_split(fit_model_name, "_")[[1]][2]
@@ -311,7 +313,6 @@ pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode",
   # Call Stan model if model name is given
   loaded_fit <- readRDS(fit_model_name)
 
-  
   # Predict
   coef = extract_coef_func(loaded_fit, coef_mode)
   pred_res = predict_func(stan_data, coef, temp_df)
@@ -321,18 +322,21 @@ pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode",
   temp_df = temp_df %>%
     select(MakeName, MMT, MY, problem_area, y_pred)
   
-  # Compute mean naive probability & predicted probability 
+  # Compute mean cell probability & predicted probability 
   res_df = temp_df %>%
     group_by(MakeName, MMT, MY) %>% 
-    summarise(cnt=n(), round(across(everything(), list(mean=mean)), 4))
+    dplyr::summarize(cnt=n(), across(everything(), list(mean=mean)))
   
   res_df = subset(res_df, select = -c(cnt_mean))
+  res_df['%_deviation'] <- round((res_df$y_pred_mean - res_df$q19_2_mean) / res_df$q19_2_mean * 100, 1)
+  res_df[c('q19_2_mean','y_pred_mean')] = round(res_df[c('q19_2_mean','y_pred_mean')], 4)
   
   return(res_df)
 }
 
-# Function to calculate diagnostics for model comparison
 calculate_diagnostics <- function(filename){
+  # Function to calculate diagnostics for model comparison
+  # filename: Trained Stanfit model file - .rds file
   
   # load in the model
   fit <- readRDS(filename)
@@ -352,17 +356,19 @@ calculate_diagnostics <- function(filename){
   print(loo(fit_log, r_eff = fit_eff))
 }
 
-# # Example Train
-# for (iter in c(5000, 10000, 20000)) {
-#   for (chain in c(4, 8, 12))
-#   run_model(df, iter=iter, chains=chain, "Mercedes-Benz", "q19_2")
-# }
+## Example Train
+#for (iter in c(20000)) {
+#  for (chain in c(12))
+#  run_model(df, iter=iter, chains=chain, "Acura", "q19_2")
+#}
 
-#run_model(df, make="Acura", iter=5000, chains=12,"q19_2", save_fit=TRUE)
-# calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
+
+#run_model(df, make="Nissan", iter=5000, chains=12,"q19_2", save_fit=TRUE)
+# Example Calculate Diagnostics
+#calculate_diagnostics("./models/fit_Acura_M8_v2_5000_12.rds")
 
 # Example Compute Probability
-# M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_v2_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
-# 
+#M8_v2_res_df = pred_prob(df, fit_model_name="models/fit_Nissan_M8_v2_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
+
 # View resulting table
-# view(M8_res_df)
+#view(M8_v2_res_df)

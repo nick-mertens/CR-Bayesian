@@ -77,8 +77,8 @@ conv_test = function(fit_model_name, show_params=FALSE, plot_chains=FALSE) {
   return(loaded_fit)
 }
 
-plot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chains=NULL, downsampled=TRUE) {
-  # Plot posterior distributions of parameters for Stanfit objects
+multiplot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chains=NULL, downsampled=TRUE) {
+  # Plot posterior distributions of parameters for Stanfit objects for comparison
   # Parameter 1: path where Stanfit objects are located
   # Parameter 2: Name of the Make
   # Parameter 3: index of MMT
@@ -138,4 +138,36 @@ plot_posterior = function(model_path="models/", MakeName, i, j, iter=NULL, chain
   ggarrange(mu, kappa, rho, beta0, beta1, beta2, ncol=3, nrow=2, common.legend=TRUE)
 }
 
-plot_posterior("models/","Nissan",9,2,iter=NULL,chains=NULL,downsampled=TRUE)
+plot_posterior = function(model_path="models/", model_name, i, j) {
+  # Plot posterior distribution of specified Stanfit objects
+  # Parameter 1: path where Stanfit objects are located
+  # Parameter 2: RDS file name
+  # Parameter 3: index of MMT
+  # Parameter 4: index of MY
+  
+  # Parameters of interests: beta_1, beta_2
+  beta1_df <- data.frame()
+  beta2_df <- data.frame()
+  
+  loaded_fit <- readRDS(paste("models/", model_name, sep=""))
+  iter_num = str_split(model_name, "_|\\.")[[1]][4]
+  chains_num = str_split(model_name, "_|\\.")[[1]][5]
+  beta1_df <- rbind(beta1_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,sep="")), beta1=extract(loaded_fit)$Beta[,j,i,1]))
+  beta2_df <- rbind(beta2_df, data.frame(iter_chains=sub('_NA', '', paste(iter_num,"_",chains_num,sep="")), beta2=extract(loaded_fit)$Beta[,j,i,2]))
+  # Save parameter name as well as iterations & chains information 
+  beta1_mode <- max_density_func(beta1_df$beta1)
+  beta2_mode <- max_density_func(beta2_df$beta2)
+  
+  size = 1
+  axis_theme = theme(axis.title.x = element_text(size = 40), axis.text.x = element_text(size = 28))
+  # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training
+  beta1 <- ggplot(beta1_df, aes(x=beta1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+    geom_vline(xintercept=beta1_mode, size=1.5, color="red") + geom_text(aes(x=beta1_mode, label=paste("Mode:", round(beta1_mode, 3)), y=0.3, vjust=0.8, hjust=-0.2), colour='black', size=14)
+  beta2 <- ggplot(beta2_df, aes(x=beta2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+    geom_vline(xintercept=beta2_mode, size=1.5, color="red") + geom_text(aes(x=beta2_mode, label=paste("Mode:", round(beta2_mode, 3)), y=0.3, vjust=0.8, hjust=-0.2), colour='black', size=14)
+  figure <- ggarrange(beta1, beta2, ncol=2, nrow=1, common.legend=TRUE) 
+  annotate_figure(figure, fig.lab.size=16)
+}
+
+#plot_posterior("models/","fit_Acura_M8_5000_12.rds", 1, 1)
+

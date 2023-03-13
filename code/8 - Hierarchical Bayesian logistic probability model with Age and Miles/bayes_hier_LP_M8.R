@@ -4,6 +4,7 @@ working_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/
 setwd(working_directory)
 
 #Importing required packages
+library(tidyr)
 library(dplyr)
 options(dplyr.summarise.inform = FALSE)
 library(data.table)
@@ -21,7 +22,6 @@ library(bayesplot)
 library(tidybayes)
 library(matrixStats)
 library(TeachingDemos)
-library(tidyr)
 library(here)
 library(parallel)
 library(bruceR)
@@ -64,7 +64,7 @@ stan_data_func = function(df, years, problem_area){ # adding variable to allow f
   
   N_MY = df %>%
     group_by(MMT, MY) %>%
-    summarise(count = n())
+    summarize(count = n())
   
   # Add dummy column to avoid bug in complete() 
   N_MY = cbind(0, N_MY) 
@@ -319,9 +319,11 @@ pred_prob <- function(df, fit_model_name=NULL, problem_area, coef_mode=c("mode",
   # Compute mean naive probability & predicted probability 
   res_df = temp_df %>%
     group_by(MakeName, MMT, MY) %>% 
-    summarise(cnt=n(), round(across(everything(), list(mean=mean)), 4))
+    summarize(cnt=n(), across(everything(), list(mean=mean)))
   
   res_df = subset(res_df, select = -c(cnt_mean))
+  res_df['%_deviation'] <- round((res_df$y_pred_mean - res_df$q19_2_mean) / res_df$q19_2_mean * 100, 1)
+  res_df[c('q19_2_mean','y_pred_mean')] = round(res_df[c('q19_2_mean','y_pred_mean')], 4)
   
   return(res_df)
 }
@@ -357,7 +359,7 @@ calculate_diagnostics <- function(filename){
 # calculate_diagnostics("./models/fit_Acura_M8_5000_12.rds")
 
 # Example Compute Probability
-# M8_res_df = pred_prob(df, fit_model_name="models/fit_Nissan_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
+#M8_res_df = pred_prob(df, fit_model_name="models/fit_Acura_M8_5000_12.rds", problem_area = "q19_2", coef_mode="mode")
 # 
 # View resulting table
 #view(M8_res_df)
