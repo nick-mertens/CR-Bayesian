@@ -1,0 +1,103 @@
+```{r}
+library(dplyr)
+options(dplyr.summarise.inform = FALSE)
+library(Hmisc)
+```
+
+```{r}
+working_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code"
+setwd(working_directory)
+df = read.csv("mixeddata052722.csv")
+df = df[,c("MakeName","MMT","Age","q19_2")]
+```
+
+```{r}
+# Overall age distribution
+# describe(df$Age)
+hist(df$Age, freq = FALSE, breaks=20)
+lines(density(df$Age, bw=4), lwd=1, col="red")
+
+# Top 10 make respondents age density plots 
+df_count = df %>% group_by(MakeName) %>% summarise(count=n()) %>% arrange(desc(count))
+
+ggplot(df[df$MakeName %in% df_count[1:10,]$MakeName,], aes(x=Age, color=MakeName)) + geom_density(size=1) + 
+  ggtitle("Top 10 Make Responders Age Distribution")
+options(repr.plot.width = 10, repr.plot.height = 10, repr.plot.res = 1000)
+```
+
+No significant differences in age distribution among makes - Lexus has little higher peak in higher age.
+
+```{r, fig.width = 10, fig.height = 6}
+# Toyota Model Age Distribution
+ggplot(df[df$MakeName == "Toyota",], aes(x=Age, color=MMT)) + geom_density(size=1) + 
+  ggtitle("Toyota Age Distribution by MMT")
+
+# Nissan Model Age Distribution
+ggplot(df[df$MakeName == "Nissan",], aes(x=Age, color=MMT)) + geom_density(size=1) + 
+  ggtitle("Nissan Age Distribution by MMT")
+```
+
+```{r}
+# Bin ages into groups of 5
+df$AgeGroup = findInterval(df$Age, c(45,55,65,75))
+df$AgeGroup = (df$AgeGroup + 4) * 10 + 5
+df %>% group_by(AgeGroup) %>% summarise(count=n())
+
+ggplot(df, aes(AgeGroup)) + geom_histogram(color="black", fill="white", binwidth = 9) + ggtitle("Binned Age Group Histogram")
+
+df_prob = df %>% group_by(AgeGroup) %>% summarise(prob_ratio = sum(q19_2) / n(), count=n())
+
+ggplot(df_prob, aes(x=AgeGroup, y=prob_ratio)) + geom_bar(stat="identity") + ggtitle("q19_2 Problem Reporting Rate by Age Group")
+```
+
+**We see that majority of respondents fall in the range of 50s \~ 70s.**
+
+**Furthermore, we also see that problem reporting rate decreases significantly as age bin increases.**
+
+```{r, fig.width = 10, fig.height = 6}
+#Select list of makes
+make_list = df_count[1:11,]$MakeName
+
+ggplot(df[df$MakeName %in% make_list,], aes(AgeGroup)) + geom_histogram(color="black", fill="white", binwidth = 9) + 
+  ggtitle("Binned Age Group Histogram - Top 10 Make Combined")
+
+df_make_prob_agg = df[df$MakeName %in% make_list,] %>% group_by(AgeGroup) %>% summarise(prob_ratio=sum(q19_2) / n()) 
+
+ggplot(df_make_prob_agg, aes(x=AgeGroup, y=prob_ratio)) + geom_bar(stat="identity") +
+  ggtitle("q19_2 Problem Reporting Rate by Age Group - Top 10 Make Combined")
+
+for (i in 1:10) {
+  make = df_count[1:11,]$MakeName[i]
+  df_make_prob_agg = df[df$MakeName == make,] %>% group_by(AgeGroup) %>% summarise(prob_ratio=sum(q19_2) / n(), count=n())
+  assign(paste("variable", i, sep="_"), ggplot(df_make_prob_agg, aes(x=AgeGroup, y=prob_ratio)) + geom_bar(stat="identity") + ggtitle(make) + xlab(NULL) + ylab(NULL)) 
+}
+
+figure <- ggarrange(variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7,
+                    variable_8, variable_9, variable_10, ncol=3, nrow=4, common.legend=TRUE) 
+annotate_figure(figure, fig.lab.size=16)
+```
+
+**We observe that problem reporting rate decreases steeply as age increases from 20s to 40s, yet it plateaus after that threshold. -\> Would it be appropriate to use "Age" as a continuous coefficient? (How about age binning)**
+
+```{r}
+make_list = df_count[1:11,]$MakeName
+df_make_age = df[df$MakeName %in% make_list,] %>% group_by(AgeGroup, MakeName) %>% summarise(prob_ratio=sum(q19_2) / n(), count=n()) 
+ggplot(df_make_age, aes(x=AgeGroup, y=MakeName, fill=prob_ratio)) + geom_tile() +
+  scale_fill_gradient(low = "#FFFF8B", high = "#E60000")
+```
+
+**What cars do young people own?**
+
+```{r}
+df_40 <- df %>% group_by(AgeGroup, MakeName) %>% summarise(count=n(), prob_count=sum(q19_2))
+df_40 <- df_40 %>% group_by(MakeName) %>% mutate(count_pct = count / sum(count)) %>% arrange(MakeName, AgeGroup)
+
+# % of under 40 car owners for each Make
+df_40 <- df_40[df_40$AgeGroup <= 40,] %>% group_by(MakeName) %>% summarise(count_pct = sum(count_pct), count=sum(count), prob_ratio=sum(prob_count)/sum(count)) %>% arrange(desc(count_pct))
+
+df_make <- df %>% group_by(MakeName) %>% summarise(avg_prob_ratio=sum(q19_2)/n()) 
+df_40_make = merge(x=df_40, y=df_make, by="MakeName")
+df_40_make[order(-df_40_make$count_pct),]
+plot(x=df_40_make$count_pct, y=df_40_make$prob_ratio)
+text(df_40_make$count_pct, df_40_make$prob_ratio, labels=df_40_make$MakeName)
+```
