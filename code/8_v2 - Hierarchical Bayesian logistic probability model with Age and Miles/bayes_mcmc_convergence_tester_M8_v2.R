@@ -1,5 +1,6 @@
 # Setting work Directory
 model_directory = "C:/Users/JaeHunLee/OneDrive - Blend 360/Desktop/CR/Bayesian_git/code/8_v2 - Hierarchical Bayesian logistic probability model with Age and Miles"
+#model_directory = "/Users/nick.mertens/Library/CloudStorage/OneDrive-Blend360/Consumer Reports/Documents/2023 Bayesian Modeling - Phase II/CR-Bayesian/code/8_v2 - Hierarchical Bayesian logistic probability model with Age and Miles"
 setwd(model_directory)
 
 source("bayes_hier_LP_M8_v2.R")
@@ -190,13 +191,13 @@ plot_posterior = function(model_path="models/", model_name, i, j) {
   axis_theme = theme(axis.title.x = element_text(size = 32), axis.text.x = element_text(size = 24))
   
   # Plot posteriors for each parameter. Each overlay represents respective iteration & chains input for training
-  mu1 <- ggplot(mu1_df, aes(x=mu1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+  mu1 <- ggplot(mu1_df, aes(x=mu1, color=iter_chains)) + geom_density(size=size) + labs(NULL) + axis_theme + 
     geom_vline(xintercept=mu1_mode, size=1.5, color="red") + geom_text(aes(x=mu1_mode, label=paste("Mode:", round(mu1_mode, 3)), y=0.5, vjust=0.8, hjust=-0.2), colour='black', size=11)
-  mu2 <- ggplot(mu2_df, aes(x=mu2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+  mu2 <- ggplot(mu2_df, aes(x=mu2, color=iter_chains)) + geom_density(size=size) + labs(NULL) + axis_theme + 
     geom_vline(xintercept=mu2_mode, size=1.5, color="red") + geom_text(aes(x=mu2_mode, label=paste("Mode:", round(mu2_mode, 3)), y=0.5, vjust=0.8, hjust=-0.2), colour='black', size=11)
-  beta1 <- ggplot(beta1_df, aes(x=beta1, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+  beta1 <- ggplot(beta1_df, aes(x=beta1, color=iter_chains)) + geom_density(size=size) + labs(NULL) + axis_theme + 
     geom_vline(xintercept=beta1_mode, size=1.5, color="red") + geom_text(aes(x=beta1_mode, label=paste("Mode:", round(beta1_mode, 3)), y=0.3, vjust=0.8, hjust=-0.2), colour='black', size=11)
-  beta2 <- ggplot(beta2_df, aes(x=beta2, color=iter_chains)) + geom_density(size=size) + ylab(NULL) + axis_theme + 
+  beta2 <- ggplot(beta2_df, aes(x=beta2, color=iter_chains)) + geom_density(size=size) + labs(NULL) + axis_theme + 
     geom_vline(xintercept=beta2_mode, size=1.5, color="red") + geom_text(aes(x=beta2_mode, label=paste("Mode:", round(beta2_mode, 3)), y=0.3, vjust=0.8, hjust=-0.2), colour='black', size=11)
   figure <- ggarrange(mu1, mu2, beta1, beta2, ncol=2, nrow=2, common.legend=TRUE) 
   annotate_figure(figure, fig.lab.size=16)
