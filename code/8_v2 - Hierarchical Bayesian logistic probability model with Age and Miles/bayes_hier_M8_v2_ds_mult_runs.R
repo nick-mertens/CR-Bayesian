@@ -69,3 +69,30 @@ view(complete_res_df)
 # save final file
 write.csv(complete_res_df, paste("./downsample_results/", make, "_downsampling_", sample_num, "_M8_v2_allruns.csv", sep = ""))
 
+# create a list of all csv files in the working directory
+files <- list.files(path = "./downsample_results/", pattern = "*.csv")
+
+# get the files for the specific downsampled results
+files_300 <- files[2:6]
+files_600 <- files[8:12]
+
+# create an empty dataframe to store the combined data
+combined_data <- data.frame()
+
+# loop through all csv files and combine them into one dataframe
+# for (file in files_300) {
+for (file in files_600) {
+  print(file)
+  data <- read.csv(paste("./downsample_results/", file, sep =""))
+  combined_data <- rbind(combined_data, data)
+}
+
+# group by MakeName, MMT, and MY and calculate the mean of q19_2_mean and y_pred_mean
+grouped_data <- combined_data %>% 
+  group_by(MakeName, MMT, MY) %>% 
+  summarise(q19_2_mean_mean = mean(q19_2_mean),
+            y_pred_mean_mean = mean(y_pred_mean))
+
+# return the final dataframe
+grouped_data
+
